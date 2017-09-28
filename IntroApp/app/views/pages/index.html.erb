@@ -1,0 +1,33 @@
+<div class="row" style="margin:50px">
+    <span class="span12">
+      <div class="text-center">
+        <h1>Learning Tools Interoperability®</h1>
+      </div>
+      <p>
+        Learning Tools Interoperability® (LTI®) is a specification developed by IMS Global Learning Consortium. The basic motivation behind the concept of LTI is to establish a standard way of integrating remotely hosted learning applications with the platforms like learning management systems and other educational environments.
+      </p>
+      <h3>Terminologies</h3>
+      <p>
+        Learning applications are called <strong>Tools</strong> (delivered by Tool Providers) <br><br>
+        The LMS, or platforms, are called <strong>Tool Consumers</strong> such as Canvas, Moodle etc.<br><br>
+        For example: Code Workout which is developed at Virginia Tech to enable students to write code is a Tool and is hosted on Virginia Tech's servers and Canvas (Tool Consumer) integrates Code Workout seamlessly and enables students to write code on Canvas.
+        The LTI specification enhances the functionality provided by a Tool Consumer and provides instructors with various applications that they can embed into their course. For example: The <a href="https://www.eduappcenter.com/apps/36#.WcFgotOGM0o" target="_blank">Wikipedia LTI application</a> lets instructors to "Search through English Wikipedia articles and link to or embed these articles into course material", similarly, <a href="https://www.eduappcenter.com/apps/12#.WcFgotOGM0p" target="_blank">Piazza LTI application</a> adds a link to the course navigation for Piazza discussions, and auto-logs the user into the course discussions area.
+      </p>
+      <h3>Introduction</h3>
+      <p>
+        LTI enables the tool consumer to send a user to the tool provider in a trusted way. The trust assertion allows the user to be automatically signed in to the tool provider and directed to the content provided by the tool provider.<br>
+        <br>
+        <div class="thumbnail" style="float: right; width: 300px; margin-left: 10px;">
+          <%= image_tag "iframe.png" %>
+        </div>
+        <strong>Launch:</strong> The LMS (consumer) launches the tools (provider) in an iframe so they feel like a part of the LMS as shown in the picture below. The user won’t notice if it is a part of Tool Consumer (LMS) or not.
+      </p>
+      <p>
+        <strong>Security:</strong> LTI Authentication uses the OAuth standard, which is a secure protocol over HTTPS for communication between different systems. The consumer and a provider share a consumer key and shared secret that are used to sign any messages passed between the two systems. The signature is done through OAuth, so that the signatures can be verified by either party.
+        <br><br>Consumer sends an HTTP POST request to the provider with a key and a secret which can be verified by both parties. These consumer_key and consumer_secret are shared before any LTI requests can happen. The consumer_key is used by both Consumer and Provider to identify who they are talking to. The consumer_secret will be used to digitally sign every request going in either direction.
+
+      </p>
+      <div style="clear:both;"></div>
+    </span>
+
+</div>

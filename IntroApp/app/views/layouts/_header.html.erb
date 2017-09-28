@@ -1,0 +1,41 @@
+<div class="topmenu">
+    <div class="navbar-wrapper">
+        <div class="container-fluid">
+            <nav class="navbar navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#"></a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="http://cssplice.org" class="">SPLICE Home</a></li>
+                            <li class=" dropdown">
+                                <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">LTI <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li> <a href="/">About LTI</a> </li>
+                                    <li> <%= link_to "Examples",   examples_pages_path %> </li>
+                                    <li> <a href="https://www.imsglobal.org/activity/learning-tools-interoperability" target="_blank">IMS Global Home</a> </li>
+                                </ul>
+                            </li>
+                            <li class=" dropdown">
+                                <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li> <a href="#">Creating an LTI app</a> </li>
+                                </ul>
+                            </li>
+                            <li><%= link_to "Examples",   examples_pages_path %></li>
+                            <li><a href="http://www.imsglobal.org/activity/caliper" class="">Caliper</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
