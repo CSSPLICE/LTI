@@ -1,0 +1,7 @@
+production:
+  calculatorkey: 'FirstSecret'
+  calculatorkey2: 'SecondSecret'
+
+development:
+  calculatorkey: 'FirstSecret'
+  calculatorkey2: 'SecondSecret'
