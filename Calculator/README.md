@@ -1,6 +1,6 @@
 README
 
-This is a sample LTI calculator application.
+This is a sample LTI calculator application for Ruby on Rails.
 
 Rails version: 5.1.4
 
