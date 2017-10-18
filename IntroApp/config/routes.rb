@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
   root 'pages#index'
   get 'index' => 'pages#index'
-  get 'tutorials/rails' => 'pages#railstutorial'
-  get 'examples' => 'pages#examples'
+  get 'lti/tutorials/rails' => 'pages#railstutorial'
+  get 'lti/examples' => 'pages#examples'
+  get 'lti' => 'pages#lti'
   #get "pages/:page" => "pages#show"
   #get 'pages/examples' => 'pages#examples', as: "examples"
   # resources :pages do
