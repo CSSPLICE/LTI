@@ -12,7 +12,7 @@
         The LMS, or platforms, are called <strong>Tool Consumers</strong> such as Canvas, Moodle etc.
       </p>
       <h3>Use Cases</h3>
-      <p>The LTI specification enhances the functionality provided by a Tool Consumer and provides instructors with various applications that they can embed into their course. For example: </p>
+      <p>LTI specification enhances the functionality provided by a Tool Consumer and provides instructors with various applications that they can embed into their course. For example: </p>
       <ul>
         <li><a href="https://codeworkout.cs.vt.edu/">Code Workout</a> which is developed at Virginia Tech to enable students to write code is a Tool and is hosted on Virginia Tech's servers and Canvas (Tool Consumer) integrates Code Workout seamlessly and enables students to write code on Canvas.</li>
         <li>The <a href="https://www.eduappcenter.com/apps/36#.WcFgotOGM0o" target="_blank">Wikipedia LTI application</a> lets instructors to Search through English Wikipedia articles and link to or embed these articles into course material. </li>
@@ -25,30 +25,30 @@
         <div class="thumbnail" style="float: right; width: 300px; margin-left: 10px;">
           <%= image_tag "iframe.png" %>
         </div>
-        <strong>Launch:</strong> The LMS (consumer) launches the tools (provider) in an iframe so they feel like a part of the LMS as shown in the picture below. The user won’t notice if it is a part of Tool Consumer (LMS) or not.
+        <strong>Launch:</strong> The LMS (consumer) launches the tools (provider) in an iframe so they feel like a part of the LMS as shown in the picture. The user won’t notice if it is a part of Tool Consumer (LMS) or not.
       </p>
       <p>
         <strong>Security:</strong> LTI Authentication uses the OAuth standard, which is a secure protocol over HTTPS for communication between different systems. The consumer and a provider share a consumer key and shared secret that are used to sign any messages passed between the two systems. The signature is done through OAuth, so that the signatures can be verified by either party.
-        <br><br>Consumer sends an HTTP POST request to the provider with a key and a secret which can be verified by both parties. These consumer_key and consumer_secret are shared before any LTI requests can happen. The consumer_key is used by both Consumer and Provider to identify who they are talking to. The consumer_secret will be used to digitally sign every request going in either direction.
+        <br><br>Consumer sends an HTTP POST request to the provider with a key and a secret which can be verified by both parties. These consumer_key and consumer_secret are shared before any LTI requests can happen and are used by both the Consumer and a Provider to identify who they are talking to.
 
       </p>
       <div style="clear:both;"></div><br>
       <div class="text-center">
         <h1 id="buildtp">Building an LTI Tool Provider</h1>
       </div><br>
-      <p> If you have a learning application that you want to make LTI compatible or if you want to create a new LTI Tool Provider, you just have to implement the following few steps.</p>
+      <p> If you have a learning application that you want to make LTI compatible or if you want to create a new LTI Tool Provider, you only have to implement the following few steps.</p>
       <strong>
         Step 1: Tool Consumer Registration
       </strong><br>
       <p>
-        Provide an option to register Tool Consumer with a key and secret, which can be shared with Tool Consumer. The minimum data required for each Tool Consumer is their key and secret but you may want to add additional data fields while registering a Tool Consumer. For example, you may want to keep track of the name of tool consumer, when the particular tool consumer registered, when did it last access and similarly various other things you would like.
+        Provide an option to register Tool Consumer and provide them a unique key and secret. The minimum data required for each Tool Consumer is their key and a secret but you may want to add additional data fields while registering a Tool Consumer. For example, you may want to keep track of the name of tool consumer, when the particular tool consumer was registered, when did it last access and similarly various other things you would like.
       </p>
 
       <strong>
         Step 2: Setup a Launch URL
       </strong><br>
       <p>
-        Setup a URL which will receive an HTTP POST message from Tool Consumer. The script at this page should first verify if the received request is an LTI request or not. The POST request should contain <strong>lti_message_type</strong> with a value of 'basic-lti-launch-request', <strong>lti_version</strong> with a value of LTI-1p0 for LTI 1, <strong>oauth_consumer_key</strong>, and a <strong>resource_link_id</strong> which is a unique id referencing the link, or placement, of the app in the consumer. If any of these are missing, then the request is not an LTI request. After verifying the request as an LTI request, the next step is to verify the authenticity of the request.
+        Setup a URL which will receive an HTTP POST message from a Tool Consumer. The script at this page should first verify if the received request is an LTI request or not. The POST request should contain <strong>lti_message_type</strong> with a value of 'basic-lti-launch-request', <strong>lti_version</strong> with a value of LTI-1p0 for LTI 1, <strong>oauth_consumer_key</strong>, and a <strong>resource_link_id</strong> which is a unique id referencing the link, or placement, of the app in the consumer. If any of these are missing, then the request is not an LTI request. After verifying the request as an LTI request, the next step is to verify the authenticity of the request.
       </p>
       <strong>
         Step 3: Authenticate the request
@@ -59,9 +59,9 @@
           <li>oauth_callback – about:blank</li>
           <li>oauth_consumer_key – The unique key assigned to each Tool Consumer.</li>
           <li>oauth_nonce – A unique value identifying the message which helps in identifying the duplicate messages.</li>
-          <li>oauth_signature – On Tool Provider end, key and secret is used to generate a signature and the generated signature must match with this signature.</li>
-          <li>oauth_signature_method – the method used to generate the signature, LTI currently supports HMAC-SHA1.</li>
-          <li>oauth_timestamp – The time at which the message was signed. This should be checked that if the server time is within specific time interval of this timestamp (typically 5 minutes).</li>
+          <li>oauth_signature – On Provider's end, the key and corresponding secret is used to generate a signature which is matched this signature.</li>
+          <li>oauth_signature_method – The method used to generate the signature, LTI currently supports HMAC-SHA1.</li>
+          <li>oauth_timestamp – The time at which the message was signed. It should be checked that if the server time is within specific time interval of this timestamp (typically 5 minutes).</li>
           <li>oauth_version – The OAuth version used</li>
         </ul>
       </p>
@@ -70,7 +70,7 @@
         Step 4: Launch
       </strong><br>
       <p>
-        At this point, you now have a valid LTI request, and it is best to know what parameters are coming are in the request from Consumer because LTI specification has a very few required parameters and others are either recommended or optional. If you are receiving user_id, and if your application requires user login, you will have to start a session for that user. If the user is a new user, you will have to create an account first before starting his session. The request may contain many other parameters such as, Name of a user, course id etc.<br><br>
+        At this point, you now have a valid LTI request, and it is best to know what parameters are you receiving in the request from Consumer because LTI specification has a very few required parameters and others are either recommended or optional. If you are receiving user_id, and if your application requires user login, you will have to start a session for that user. If the user is a new user, you will have to create an account first before starting his session. The request may contain many other parameters such as, Name of a user, course id etc.<br><br>
         Following is a list of parameters that LTI specification provides. There can be other parameters that Consumer may want to send and those parameters will have a prefix "custom". <br>
         <ul>
           <ol>
@@ -123,9 +123,9 @@
         Step 5: Provide Configuration for Tool Consumer
       </strong><br>
       <p>
-        Tool Consumer requires a launch URL, key, secret and other settings such as placement of your application in Tool Consumer. The best practice is to provide an XML Configuration file, which can be copied into Tool Consumer to make your tool available to Instructors in Tool Consumer to use. You may use <a href="https://www.edu-apps.org/build_xml.html">this link</a> to generate your XML file.
+        Tool Consumer requires a launch URL, a key and a secret along with the other settings such as placement of your application in Tool Consumer. The best practice is to provide an XML Configuration file, which can be copied into Tool Consumer to make your tool available to instructors in Tool Consumer to use. You may use <a href="https://www.edu-apps.org/build_xml.html">this link</a> to generate your XML file.
       </p>
-      <p>The XML File has a structure is
+      <p>The XML File has the following structure
         <pre><xmp>   <?xml version="1.0" encoding="UTF-8"?>
       <cartridge_basiclti_link xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
         xmlns:blti = "http://www.imsglobal.org/xsd/imsbasiclti_v1p0"
@@ -147,7 +147,7 @@
       <cartridge_icon identifierref="BLTI001_Icon"/>
     </cartridge_basiclti_link></xmp></pre>
 <br>
-    If you want your application to appear under course navigation section of Canvas, you will have to add option under extensions in XML. For example:
+    If you want your application to appear under course navigation section of Canvas, you will have to add option under extensions in your XML file. For example:
 <br><br>
     <pre><xmp>   <?xml version="1.0" encoding="UTF-8"?>
       <cartridge_basiclti_link xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
@@ -182,9 +182,9 @@
         Step 6: Get SSL Certificate
       </strong><br>
       <p>
-        If Canvas launches your unsecure application, it will show a warning and will ask the user to open the application in new tab, which does not present a good user experience. Therefore, you should get a SSL certificate so your application can run over HTTPS and open in an iframe. LTI Authentication uses the OAuth standard, which is a secure protocol over HTTPS for communication between systems. Get a PEM certificate if you are developing locally. You'll eventually need one for your production server as well.
+        If Canvas launches your unsecure application, it will show a warning and will ask the user to open the application in new tab, which does not present a good user experience. Therefore, you should get a SSL certificate so your application can run over HTTPS and open in an iframe. Get a PEM certificate if you are developing locally. You'll eventually need one for your production server as well.
       </p>
-      <p>Following are the steps for generating SSL certificate locally on UNIX environment</p>
+      <p>Following are the steps for generating SSL certificate locally on a UNIX environment</p>
       <pre>
       Step 1: Create your private key with any password.
       $ openssl genrsa -des3 -out server.orig.key 2048
@@ -205,6 +205,9 @@
       $ thin start --ssl --ssl-key-file server.key --ssl-cert-file server.crt</pre>
 
       <p>When you run your application first time, you will have to add it to trusted system.</p>
+      <br/>
+      <br/>
+      You should be done at this point and your application should be integrated with Tool Consumer.
     </span>
 
 </div>
