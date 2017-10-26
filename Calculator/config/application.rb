@@ -14,6 +14,5 @@ module Calculator
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-    config.lti_settings = Rails.application.config_for(:lti_settings)
   end
 end

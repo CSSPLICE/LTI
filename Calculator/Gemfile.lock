@@ -70,9 +70,6 @@ GEM
     globalid (0.4.0)
       activesupport (>= 4.2.0)
     i18n (0.8.6)
-    ims-lti (1.1.13)
-      builder
-      oauth (>= 0.4.5, < 0.6)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -96,7 +93,6 @@ GEM
     nio4r (2.1.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
-    oauth (0.5.3)
     public_suffix (3.0.0)
     puma (3.10.0)
     rack (2.0.3)
@@ -190,7 +186,6 @@ DEPENDENCIES
   byebug
   capybara (~> 2.13)
   coffee-rails (~> 4.2)
-  ims-lti (~> 1.1.8)
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   puma (~> 3.7)

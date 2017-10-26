@@ -1,0 +1,5 @@
+production:
+  calculatorkey: 'FirstSecret'
+
+development:
+  calculatorkey: 'FirstSecret'
