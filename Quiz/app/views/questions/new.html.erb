@@ -1,0 +1,47 @@
+
+<div style="text-align:center">
+  <%= form_with scope: :question, url: questions_path, local: true do |form| %>
+    <% if @question.errors.any? %>
+       <div id="error_explanation">
+         <h2>
+           <%= pluralize(@question.errors.count, "error") %> prohibited
+           this question from being saved:
+         </h2>
+         <ul>
+           <% @question.errors.full_messages.each do |msg| %>
+             <li><%= msg %></li>
+           <% end %>
+         </ul>
+       </div>
+     <% end %>
+    <p>
+      <%= form.label :title %><br>
+      <%= form.text_field :title %>
+    </p>
+
+    <p>
+      <%= form.label :option1 %><br>
+      <%= form.text_field :option1 %>
+    </p>
+    <p>
+      <%= form.label :option2 %><br>
+      <%= form.text_field :option2 %>
+    </p>
+    <p>
+      <%= form.label :option3 %><br>
+      <%= form.text_field :option3 %>
+    </p>
+    <p>
+      <%= form.label :option4 %><br>
+      <%= form.text_field :option4 %>
+    </p>
+    <p>
+      <%= form.label :correct %><br>
+      <%= form.text_field :correct %>
+    </p>
+
+    <p>
+      <%= form.submit %>
+    </p>
+  <% end %>
+</div>

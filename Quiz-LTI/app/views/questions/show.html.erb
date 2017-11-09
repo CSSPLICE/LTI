@@ -1,0 +1,26 @@
+<div>
+  <p> Total Correct: <%= QuestionsController.count.inspect %>
+  </p>
+</div>
+
+<div style="text-align:center">
+  <%= form_with scope: :question, url: submit_question_path, local: true do |form| %>
+    <p>
+      <%= @question.title %>
+    </p>
+    <p>
+      <%= form.label :option1, @question.option1 %>
+      <%= form.radio_button :option, @question.option1 %><br/>
+      <%= form.label :option2, @question.option2 %>
+      <%= form.radio_button :option, @question.option2 %><br/>
+      <%= form.label :option3, @question.option3 %>
+      <%= form.radio_button :option, @question.option3 %><br/>
+      <%= form.label :option4, @question.option4 %>
+      <%= form.radio_button :option, @question.option4 %><br/>
+      <%= form.hidden_field :id, :value => @question.id  %>
+    </p>
+    <p>
+      <%= form.submit 'Submit'%>
+    </p>
+  <% end %>
+</div>

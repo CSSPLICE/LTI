@@ -1,0 +1,5 @@
+production:
+  quizkey: 'FirstSecret'
+
+development:
+  quizkey: 'FirstSecret'

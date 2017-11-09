@@ -20,7 +20,7 @@
       This tutorial assumes that you have read through the
       <%= link_to "basic steps", lti_path(anchor: 'buildtp') %>
       for creating an LTI-compliant application, and that you have at
-      least a little familliarity with Ruby on Rails.
+      least a little familiarity with Ruby on Rails.
     <p>
       <strong>Step 1:</strong>
       Add this <a href="https://github.com/instructure/ims-lti">Ruby
@@ -43,10 +43,10 @@
 
       <pre>
         production:
-        calculatorkey: 'FirstSecret'
+          calculatorkey: 'FirstSecret'
 
         development:
-        calculatorkey: 'FirstSecret'</pre><br>
+          calculatorkey: 'FirstSecret'</pre><br>
 
       Once you share these unique keys and secrets with a tool
       consumer, it will be able to add your application like this:
@@ -69,10 +69,10 @@
       If you knew that 10 different institutes/instructors
       want to integrate your tool into their courses, you might create
       10 key/pairs.
-      But generally, you do not have any idea who will use you apps,
+      <!-- But generally, you do not have any idea who will use you apps,
       so you should create a registration page,
       generate key/secret pairs on-the-fly, and store them to a
-      database rather than a settings file.
+      database rather than a settings file. -->
     </p><br>
 
     <p>
@@ -102,10 +102,9 @@
       validation:
       <pre>
         if not Rails.configuration.lti_settings[params[:oauth_consumer_key]]
-        render :launch_error, status: 401
-        return
-        end
-      </pre><br>
+          render :launch_error, status: 401
+          return
+        end </pre><br>
 
       The code above checks if the key is present in the settings
       variable you created in step 2. If the key is not present, then
@@ -153,15 +152,15 @@
       <pre>
         require 'oauth/request_proxy/action_controller_request'
         @provider = IMS::LTI::ToolProvider.new(
-        params[:oauth_consumer_key],
-        Rails.configuration.lti_settings[params[:oauth_consumer_key]],
-        params
+          params[:oauth_consumer_key],
+          Rails.configuration.lti_settings[params[:oauth_consumer_key]],
+          params
         )
 
         if not @provider.valid_request?(request)
-        # the request wasn't validated
-        render :launch_error, status: 401
-        return
+          # the request wasn't validated
+          render :launch_error, status: 401
+          return
         end</pre>
     </p><br>
 
@@ -186,32 +185,33 @@
       app. Following is the XML configuration of this calculator
       app. In our XML, we tell Canvas under <em>lticm:options</em> tag
       that we need our Calculator application on Course Navigation.
-      <pre><xmp>           <cartridge_basiclti_link xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
-                                                    xmlns:blti = "http://www.imsglobal.org/xsd/imsbasiclti_v1p0"
-                                                    xmlns:lticm ="http://www.imsglobal.org/xsd/imslticm_v1p0"
-                                                    xmlns:lticp ="http://www.imsglobal.org/xsd/imslticp_v1p0"
-                                                    xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-                                                    xsi:schemaLocation = "http://www.imsglobal.org/xsd/imslticc_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticc_v1p0.xsd
-                                                    http://www.imsglobal.org/xsd/imsbasiclti_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0.xsd
-                                                    http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd
-                                                    http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd">
-            <blti:title>Calculator</blti:title>
-            <blti:description> Calculator  LTI Application</blti:description>
-            <blti:icon></blti:icon>
-            <blti:launch_url> http://localhost:3000/lti/launch </blti:launch_url>
-            <blti:extensions platform="canvas.instructure.com">
-              <lticm:property name="privacy_level">public</lticm:property>
-              <lticm:options name="course_navigation">
-                <lticm:property name="url"> http://localhost:3000/lti/launch </lticm:property>
-                <lticm:property name="text"> Calculator </lticm:property>
-                <lticm:property name="visibility">public</lticm:property>
-                <lticm:property name="default">enabled</lticm:property>
-                <lticm:property name="enabled">true</lticm:property>
-              </lticm:options>
-            </blti:extensions>
-            <cartridge_bundle identifierref="BLTI001_Bundle"/>
-            <cartridge_icon identifierref="BLTI001_Icon"/>
-      </cartridge_basiclti_link></xmp></pre>
+      <pre lang="xml"><xmp>           <cartridge_basiclti_link
+                  xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
+                  xmlns:blti = "http://www.imsglobal.org/xsd/imsbasiclti_v1p0"
+                  xmlns:lticm ="http://www.imsglobal.org/xsd/imslticm_v1p0"
+                  xmlns:lticp ="http://www.imsglobal.org/xsd/imslticp_v1p0"
+                  xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation = "http://www.imsglobal.org/xsd/imslticc_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticc_v1p0.xsd
+                  http://www.imsglobal.org/xsd/imsbasiclti_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0.xsd
+                  http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd
+                  http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd">
+              <blti:title>Calculator</blti:title>
+              <blti:description> Calculator  LTI Application</blti:description>
+              <blti:icon></blti:icon>
+              <blti:launch_url> http://localhost:3000/lti/launch </blti:launch_url>
+              <blti:extensions platform="canvas.instructure.com">
+                  <lticm:property name="privacy_level">public</lticm:property>
+                  <lticm:options name="course_navigation">
+                      <lticm:property name="url"> http://localhost:3000/lti/launch </lticm:property>
+                      <lticm:property name="text"> Calculator </lticm:property>
+                      <lticm:property name="visibility">public</lticm:property>
+                      <lticm:property name="default">enabled</lticm:property>
+                      <lticm:property name="enabled">true</lticm:property>
+                  </lticm:options>
+              </blti:extensions>
+              <cartridge_bundle identifierref="BLTI001_Bundle"/>
+              <cartridge_icon identifierref="BLTI001_Icon"/>
+          </cartridge_basiclti_link></xmp></pre>
     </p><br>
     <p>
       <strong>Step 8:</strong>
@@ -231,7 +231,7 @@
       <strong>Step 9:</strong>
       If you launch your application now, you will receive the
       following error:
-      <br><br> 
+      <br><br>
       <div class="text-center">
         <%= image_tag "invalid_authenticity.png", style:'width:40%' %>
       </div><br><br>
@@ -265,7 +265,7 @@
       following error in your browser console:
       <pre>
         Refused to display 'https://localhost:3000/calculator' in a frame because it set 'X-Frame-Options' to 'sameorigin'.
-      </pre><br> 
+      </pre><br>
 
       You see this error because Canvas opens the
       LTI Tool in an iframe, but Rails does not allow the application
@@ -277,7 +277,7 @@
         after_action :allow_iframe, only: [:calculator]
 
         def allow_iframe
-        response.headers.except! 'X-Frame-Options'
+          response.headers.except! 'X-Frame-Options'
         end</pre><br>
 
       In the first line of the code, we tell rails to only allow one
@@ -298,9 +298,8 @@
         <p>Make sure you have a correct key and a secret to access the calculator application.</p>
       </xmp><br>
 
-      Since Canvas will also open this page in an iframe and we direct
-      to this page within the launch endpoint, we need to
-      allow the launch endpoint to open in an iframe.
+      Since Canvas will also open this launch error page in an iframe and we redirect to this page within the launch endpoint, we need to
+      allow the launch endpoint to open in an iframe as well.
       Add the following code in <strong>lti</strong> controller.
       <br><br>
 
@@ -308,7 +307,7 @@
         after_action :allow_iframe, only: [:launch]
 
         def allow_iframe
-        response.headers.except! 'X-Frame-Options'
+          response.headers.except! 'X-Frame-Options'
         end
       </pre><br>
 
@@ -321,10 +320,10 @@
       Your <strong>routes.rb</strong> file should look like this:<br><br>
       <pre>
         Rails.application.routes.draw do
-        get 'lti/launch'
-        post 'lti/launch'
-        get 'calculator', to: 'calculator#calculator'
-        root 'calculator#calculator'
+          get 'lti/launch'
+          post 'lti/launch'
+          get 'calculator', to: 'calculator#calculator'
+          root 'calculator#calculator'
         end
       </pre>
     </p><br>
@@ -338,8 +337,11 @@
         <%= image_tag "calculator_lti.png", style:'width:40%' %>
       </div><br><br>
       You can download the
-      <a href="https://github.com/CSSPLICE/LTI/tree/master/Calculator-LTI">complete source code</a>.
-      for a version of the calculator with LTI support.
+      <a href="https://github.com/CSSPLICE/LTI/tree/master/Calculator-LTI">complete source code</a> for a version of the calculator with LTI support.
+    </p>
+    <br>
+    <p>
+      Read our <%= link_to "next tutorial", lti_tutorials_rails2_path %> to learn how to send scores back to a tool consumer.
     </p>
   </span>
 </div>

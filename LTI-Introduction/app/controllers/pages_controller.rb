@@ -5,4 +5,7 @@ class PagesController < ApplicationController
   def railstutorial
     render 'rails' and return
   end
+  def railsSendScoreTutorial
+    render 'rails_send_scores' and return
+  end
 end
