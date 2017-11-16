@@ -14,7 +14,7 @@
       exercise of a unique type) that are not otherwise available in
       Tool Consumers like Canvas.
       In this tutorial, we show how to make your assessment
-      application LTI compatible, and send the scores back 
+      application LTI compatible, and send the scores back
       to a Tool Consumer.
       <br><br>
       We have created a basic Ruby on Rails quiz application.
@@ -51,10 +51,10 @@
 
       <pre>
         production:
-        quizkey: 'FirstSecret'
+          quizkey: 'FirstSecret'
 
         development:
-        quizkey: 'FirstSecret'</pre><br>
+          quizkey: 'FirstSecret'</pre><br>
 
       Once you share your unique keys and secrets with a tool
       consumer, it will be able to add your application.
@@ -74,7 +74,7 @@
       This variable will load the key and secret from your settings
       file.<br><br>
 
-      The key/secret pair should be distinct for each tool consumer.
+      You can change the <em>quizkey</em> and <em>FirstSecret</em> in this example to what you like but each key/secret pair should be distinct for each tool consumer.
       If you knew that 10 different institutes/instructors
       want to integrate your tool into their courses, you might create
       10 key/pairs.
@@ -94,7 +94,7 @@
 
     <p>
       <strong>Step 4:</strong>
-      We need is to keep a check if our application is
+      We need to keep a check if our application is
       launched as an LTI application or not.
       If it is launched as an LTI application, then we will have to
       make a few changes to the normal behavior of our app.
@@ -144,8 +144,8 @@
       validation:
       <pre>
         if not Rails.configuration.lti_settings[params[:oauth_consumer_key]]
-        render :launch_error, status: 401
-        return
+          render :launch_error, status: 401
+          return
         end </pre><br>
 
       The code above checks if the key is present in the settings
@@ -194,15 +194,15 @@
       <pre>
         require 'oauth/request_proxy/action_controller_request'
         @provider = IMS::LTI::ToolProvider.new(
-        params[:oauth_consumer_key],
-        Rails.configuration.lti_settings[params[:oauth_consumer_key]],
-        params
+          params[:oauth_consumer_key],
+          Rails.configuration.lti_settings[params[:oauth_consumer_key]],
+          params
         )
 
         if not @provider.valid_request?(request)
-        # the request wasn't validated
-        render :launch_error, status: 401
-        return
+          # the request wasn't validated
+          render :launch_error, status: 401
+          return
         end</pre>
     </p><br>
 
@@ -221,13 +221,13 @@
         email = params[:lis_person_contact_email_primary]
         @user = User.where(email: email).first
         if @user.blank?
-        @user = User.new(:username => email,
-        :email => email,
-        :password => email,
-        :password_confirmation => email)
-        if !@user.save
-        puts @user.errors.full_messages.first
-        end
+          @user = User.new(:username => email,
+            :email => email,
+            :password => email,
+            :password_confirmation => email)
+          if !@user.save
+            puts @user.errors.full_messages.first
+          end
         end
 
         #Login the user and create his session.
@@ -255,19 +255,19 @@
       instead want to submit the score back without launching the
       page.
       T do this, modify the code at the end of
-      the <em>submitQuestion</em> endpoint 
+      the <em>submitQuestion</em> endpoint
       in the <em>Questions</em> controller to the following.
       <pre>
         if session[:isLTI]
-        @@result = @@count.to_f/(@@count+@@falseCount)
-        @@count = 0
-        @@falseCount = 0
-        redirect_to(:controller => "lti", :action => "submitscore", :result => @@result)
+          @@result = @@count.to_f/(@@count+@@falseCount)
+          @@count = 0
+          @@falseCount = 0
+          redirect_to(:controller => "lti", :action => "submitscore", :result => @@result)
         else
-        @@result = @@count
-        @@count = 0
-        @@falseCount = 0
-        redirect_to(:action => "result")
+          @@result = @@count
+          @@count = 0
+          @@falseCount = 0
+          redirect_to(:action => "result")
         end
       </pre>
       In this code, we check if the isLTI session variable is set.
@@ -278,31 +278,31 @@
     </p><br>
     <p>
       <strong>Step 9:</strong>
-      Now create a new end point <strong>submitscore</strong> 
+      Now create a new end point <strong>submitscore</strong>
       to submit the score back to tool consumer.
       Add the following code in the <em>lti</em> controller.
       <pre>
         def submitscore
-        @tp = IMS::LTI::ToolProvider.new(
-        @@launch_params[:oauth_consumer_key],
-        Rails.configuration.lti_settings[@@launch_params[:oauth_consumer_key]],
-        @@launch_params)
-        # add extension
-        @tp.extend IMS::LTI::Extensions::OutcomeData::ToolProvider
+          @tp = IMS::LTI::ToolProvider.new(
+            @@launch_params[:oauth_consumer_key],
+            Rails.configuration.lti_settings[@@launch_params[:oauth_consumer_key]],
+            @@launch_params)
+          # add extension
+          @tp.extend IMS::LTI::Extensions::OutcomeData::ToolProvider
 
-        if !@tp.outcome_service?
-        @message = "This tool wasn't lunched as an outcome service"
-        puts "This tool wasn't lunched as an outcome service"
-        render(:launch_error)
-        end
+          if !@tp.outcome_service?
+            @message = "This tool wasn't lunched as an outcome service"
+            puts "This tool wasn't lunched as an outcome service"
+            render(:launch_error)
+          end
 
-        res = @tp.post_extended_replace_result!(score: params[:result])
+          res = @tp.post_extended_replace_result!(score: params[:result])
 
-        if res.success?
-        puts "Score Submitted"
-        else
-        puts "Error during score submission"
-        end
+          if res.success?
+            puts "Score Submitted"
+          else
+            puts "Error during score submission"
+          end
         end
       </pre>
       This code creates a tool provider object using the
@@ -313,11 +313,11 @@
       First we have to check whether the tool was launched as an
       outcome service or not.
       This means that if the tool was launched as an assignment,
-      then the tool consumer expects the final results of a students.
+      then we have to send the final result of an assessment back to the tool consumer.
       Therefore, in its request it
       sends <strong><em>lis_outcome_service_url</em></strong>
       and <strong><em>lis_result_sourcedid</em></strong>.
-      The fist parameter is a URL used to send the score back, and 
+      The fist parameter is a URL used to send the score back, and
       the second parameter identifies a unique row and column within
       the Tool Consumer's gradebook.
       If these two parameters are not present, then we redirect the
@@ -332,7 +332,7 @@
       redirect the user once he completes the assessment
       in <strong><em>launch_presentation_return_url</em></strong>.
       Therefore, we redirect the user back to
-      <em>launch_presentation_return_url</em> once 
+      <em>launch_presentation_return_url</em> once
       we submit the scores.
       Add the following line at the end
       of the <em>submitscore</em> endpoint
@@ -341,38 +341,46 @@
     <p>
       <strong>Step 11:</strong>
       If you want an instructor to be able to register your
-      application in Canvas, you will need XML configuration for your
+      application in Tool Consumer, you will need XML configuration for your
       app.
       Therefore, you should create a page that provides the XML
       configuration for your app.
       Following is the XML configuration for our quiz app.
-      <pre lang="xml"><xmp>           <cartridge_basiclti_link
-                                        xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
-                                        xmlns:blti = "http://www.imsglobal.org/xsd/imsbasiclti_v1p0"
-                                        xmlns:lticm ="http://www.imsglobal.org/xsd/imslticm_v1p0"
-                                        xmlns:lticp ="http://www.imsglobal.org/xsd/imslticp_v1p0"
-                                        xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-                                        xsi:schemaLocation = "http://www.imsglobal.org/xsd/imslticc_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticc_v1p0.xsd
-                                                              http://www.imsglobal.org/xsd/imsbasiclti_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0.xsd
-                                                              http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd
-                                                              http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd">
-            <blti:title>Quiz</blti:title>
-            <blti:description> Quiz  LTI Application</blti:description>
-            <blti:icon></blti:icon>
-            <blti:launch_url> http://localhost:3000/lti/launch </blti:launch_url>
-            <blti:extensions platform="canvas.instructure.com">
-              <lticm:property name="privacy_level">public</lticm:property>
-            </blti:extensions>
-            <cartridge_bundle identifierref="BLTI001_Bundle"/>
-            <cartridge_icon identifierref="BLTI001_Icon"/>
-      </cartridge_basiclti_link></xmp></pre>
-    </p><br>
+      <pre lang="xml">
+        <xmp>
+          <cartridge_basiclti_link
+            xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
+            xmlns:blti = "http://www.imsglobal.org/xsd/imsbasiclti_v1p0"
+            xmlns:lticm ="http://www.imsglobal.org/xsd/imslticm_v1p0"
+            xmlns:lticp ="http://www.imsglobal.org/xsd/imslticp_v1p0"
+            xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation = "http://www.imsglobal.org/xsd/imslticc_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticc_v1p0.xsd
+            http://www.imsglobal.org/xsd/imsbasiclti_v1p0
+            http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0.xsd
+            http://www.imsglobal.org/xsd/imslticm_v1p0
+            http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd
+            http://www.imsglobal.org/xsd/imslticp_v1p0
+            http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd">
+              <blti:title>Quiz</blti:title>
+              <blti:description> Quiz  LTI Application</blti:description>
+              <blti:icon></blti:icon>
+              <blti:launch_url> http://localhost:3000/lti/launch </blti:launch_url>
+              <blti:extensions platform="canvas.instructure.com">
+                <lticm:property name="privacy_level">public</lticm:property>
+              </blti:extensions>
+              <cartridge_bundle identifierref="BLTI001_Bundle"/>
+              <cartridge_icon identifierref="BLTI001_Icon"/>
+          </cartridge_basiclti_link>
+        </xmp>
+      </pre>
+    </p>
+    <br>
     <p>
       <strong>Step 12:</strong>
       Now you have all of the things required to register an application
-      on Canvas: key, secret and XML configuration.
-      After pasting your XML configuration along with key and a secret
-      in Canvas, an instructor will be able see your application as an
+      in Tool Consumer: key, secret and XML configuration.
+      After entering a URL of your XML file (In Canvas, you can also paste your XML content) along with the key and a secret
+      in Tool Consumer, an instructor will be able see your application as an
       "External Tool" while creating an assignment or quiz.
       <br><br>
       <div class="text-center">
@@ -419,7 +427,8 @@
       browser console:
       <pre>
         Refused to display 'https://localhost:3000/questions/1' in a frame because it set 'X-Frame-Options' to 'sameorigin'.
-      </pre><br>
+      </pre>
+      <br>
 
       You see this error because Canvas opens the
       LTI Tool in an iframe, but Rails does not allow the application
@@ -431,7 +440,7 @@
         after_action :allow_iframe, only: [:show, :result]
 
         def allow_iframe
-        response.headers.except! 'X-Frame-Options'
+          response.headers.except! 'X-Frame-Options'
         end</pre><br>
 
       In the first line of the code, we tell rails to only allow "show" and "result"
@@ -476,28 +485,28 @@
       <br><br>
       <pre>
         Rails.application.routes.draw do
-        get 'quiz/index'
-        resources :questions
-        post 'questions/submitQuestion'=>'questions#submitQuestion', as: :submit_question
-        root 'sessions#login'
-        get "signup", :to => "users#new"
-        get "login", :to => "sessions#login"
-        get "logout", :to => "sessions#logout"
-        get "home", :to => "sessions#home"
-        get "profile", :to => "sessions#profile"
-        get "setting", :to => "sessions#setting"
-        post "signup", :to => "users#new"
-        post "login", :to => "sessions#login"
-        post "logout", :to => "sessions#logout"
-        post "login_attempt", :to => "sessions#login_attempt"
-        get "login_attempt", :to => "sessions#login_attempt"
-        post "user_create", :to => "users#create"
-        get "all", :to => "questions#index"
-        get "result", :to => "questions#result"
-        get 'lti/launch'
-        post 'lti/launch'
-        get 'lti/submitscore'
-        post 'lti/submitscore'
+          get 'quiz/index'
+          resources :questions
+          post 'questions/submitQuestion'=>'questions#submitQuestion', as: :submit_question
+          root 'sessions#login'
+          get "signup", :to => "users#new"
+          get "login", :to => "sessions#login"
+          get "logout", :to => "sessions#logout"
+          get "home", :to => "sessions#home"
+          get "profile", :to => "sessions#profile"
+          get "setting", :to => "sessions#setting"
+          post "signup", :to => "users#new"
+          post "login", :to => "sessions#login"
+          post "logout", :to => "sessions#logout"
+          post "login_attempt", :to => "sessions#login_attempt"
+          get "login_attempt", :to => "sessions#login_attempt"
+          post "user_create", :to => "users#create"
+          get "all", :to => "questions#index"
+          get "result", :to => "questions#result"
+          get 'lti/launch'
+          post 'lti/launch'
+          get 'lti/submitscore'
+          post 'lti/submitscore'
         end
       </pre>
     </p><br>
