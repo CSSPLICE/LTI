@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   get 'lti' => 'pages#lti'
   get 'lti/tutorials/rails2' => 'pages#railsSendScoreTutorial'
   get 'lti/instructions/opendsa' => 'pages#OpenDSA'
+  get 'lti/opendsa' => 'pages#OpenDSA-LTI'
+  get 'lti/opendsa/instructor' => 'pages#OpenDSA-LTI-Instructor'
   #get "pages/:page" => "pages#show"
   #get 'pages/examples' => 'pages#examples', as: "examples"
   # resources :pages do

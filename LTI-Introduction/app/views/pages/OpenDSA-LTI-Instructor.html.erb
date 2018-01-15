@@ -1,0 +1,330 @@
+<div class="row" style="margin:50px">
+  <span class="span12">
+    <div class="text-center">
+      <h1>OpenDSA - an LTI Use Case</h1>
+    </div>
+    <br>
+    <p>
+      Previously we have shown <%= link_to "here", lti_opendsa_path %> how
+      OpenDSA implements LTI when a student tries to access an OpenDSA exercise
+      from a tool consumer. Here we explain how OpenDSA makes use of LTI when
+      an instructor adds an OpenDSA exercise.
+    </p>
+
+    OpenDSA implements LTI controller and in start it allows launch and a
+    resource endpoint to open in an iframe.<br><br>
+    <pre>
+      after_action :allow_iframe, only: [:launch, :resource]
+    </pre>
+
+    When an instructor adds an OpenDSA content, he sees a list of exercises he
+    can add and for that a <strong>resource</strong> endpoint is called.
+    <br><br>
+
+    Within resource endpoint, the first thing it checks is an LMS instance, for
+    example a Virginia Tech's Canvas instance (canvas.vt.edu) is different from
+    Instructure's Canvas instance (canvas.instructure.com).<br><br>
+    <pre>
+    def resource
+      lms_instance = ensure_lms_instance()
+    </pre>
+    Within 'ensure_lms_instance', it creates a new lms instance if it doesn't
+    already exists. This is used to created the correct URL which will be
+    embeded in the exercise at the end.<br><br>
+    <pre>
+    def ensure_lms_instance
+      lms_instance = LmsInstance.find_by(url:
+      params[:custom_canvas_api_base_url])
+      if lms_instance.blank?
+        lms_instance = LmsInstance.new(
+          url: params[:custom_canvas_api_base_url],
+          lms_type: LmsType.find_by('lower(name) = :name', name:
+          params[:tool_consumer_info_product_family_code]),
+        )
+        lms_instance.save
+      end
+      return lms_instance
+    end
+    </pre>
+    Once LMS instance is fetched, it fetches the course offering with LMS
+    instance id and course number received in request and creates a launch
+    url.<br><br>
+    <pre>
+    @lms_course_num = params[:custom_canvas_course_id]
+    @lms_course_code = params[:context_label]
+    @lms_instance_id = lms_instance.id
+    @organization_id = lms_instance.organization_id
+    @course_offering = CourseOffering.find_by(lms_instance_id: lms_instance.id,
+    lms_course_num: @lms_course_num)
+    if @course_offering.blank?
+      if lms_instance.organization_id.blank?
+        @organizations = Organization.all
+      end
+      @terms = Term.on_or_future
+    end
+
+    @launch_url = request.protocol + request.host_with_port + "/lti/launch"
+  </pre>
+
+  After that it validates if it is an authentic LTI request or not.<br><br>
+  <pre>
+    # must include the oauth proxy object
+    require 'oauth/request_proxy/rack_request'
+    $oauth_creds = LmsAccess.get_oauth_creds(params[:oauth_consumer_key])
+
+    render('error') and return unless lti_authorize!
+  </pre>
+  Here OpenDSA fetches credentials from public authetication key received in
+  a request and calls 'lti_authorize!' endpoint.<br> <br>
+
+  Within lti_authorize endpoint, it creates a tool provider object from the
+  authentication object created above. If a key and secret does not match, it
+  throws an error and return.<br><br>
+
+  <pre>
+    def lti_authorize!
+      if key = params['oauth_consumer_key']
+        if secret = $oauth_creds[key]
+          @tp = IMS::LTI::ToolProvider.new(key, secret, params)
+        else
+          @tp = IMS::LTI::ToolProvider.new(nil, nil, params)
+          @tp.lti_msg = "Your consumer didn't use a recognized key."
+          @tp.lti_errorlog = "You did it wrong!"
+          @message = "Consumer key wasn't recognized"
+          return false
+        end
+      else
+        render("No consumer key")
+        return false
+      end
+  </pre>
+
+  Once, key and a secret matches, it then within the same 'lti_authorize!'
+  endpoint checks if the request is valid or not, or if the timestamp on
+  request is too old. If so, then it returns an error otherwise, it returns
+  true to resource endpoint which means the request is valid.<br><br>
+
+  <pre>
+      if !params.has_key?(:selection_directive)
+        if !@tp.valid_request?(request)
+          @message = "The OAuth signature was invalid"
+          return false
+        end
+
+        if Time.now.utc.to_i - @tp.request_oauth_timestamp.to_i > 60*60
+          @message = "Your request is too old."
+          return false
+        end
+
+        if was_nonce_used_in_last_x_minutes?(@tp.request_oauth_nonce, 60)
+          @message = "Why are you reusing the nonce?"
+          return false
+        end
+      end
+
+      return true
+    end
+  </pre>
+
+  Once the request has been validated, then within the resource endpoint, it
+  signs in the user.<br><br>
+
+  <pre>
+    @user = User.where(email: params[:lis_person_contact_email_primary]).first
+    sign_in @user
+  </pre>
+
+  Finally it parses RST files and fetches the names of all exercises and shows
+  lti_resource layout which opens 'views/lti/resource.html.haml'. The names of
+  these exercises will be later shown to instructors in a tree view from where
+  they can select an exercise to add to their courses.<br><br>
+
+  <pre>
+    require 'RST/rst_parser'
+    exercises = RstParser.get_exercise_info()
+
+    @json = exercises.to_json()
+
+    render layout: 'lti_resource'
+  end
+  </pre>
+
+    When an instructor tries to add an OpenDSA exercise it asks to provide some
+    information that OpenDSA uses to identify course offering. It shows a form
+    similar to the one shown below:
+    <div class="text-center">
+      <%= image_tag "OpenDSA/info.png", style:'width:30%' %>
+    </div>
+    This is implemented in the 'views/lti/resource.html.haml'.<br><br>
+
+    <pre>
+    :javascript
+    window.jsonFile = #{@json.html_safe};
+    window.return_url = "#{params[:launch_presentation_return_url].html_safe}";
+    window.odsa_launch_url = "#{@launch_url}";
+    window.odsa_organizations = #{@organizations.blank? ? 'undefined' :
+    @organiations.to_json.html_safe};
+    window.organization_id = #{@organization_id.blank? ? 'undefined' :
+    @organization_id};
+    window.odsa_course_info = {
+      course_offering: {
+        lms_instance_id: #{@lms_instance_id},
+        lms_course_num: #{@lms_course_num},
+        lms_course_code: '#{@lms_course_code}',
+        label: '#{@lms_course_code}'
+      }
+    };
+    window.course_offering_id = #{@course_offering.blank? ? 'undefined' :
+    @course_offering.id};
+
+    .row
+    .col-xs-9.alert-msg#alert-box{style: 'display: none;'}
+      .alert.alert-danger.alert-dismissable{role: 'alert'}
+        %button#dismiss-button{type: 'button', class: 'close'}
+          %span
+            &times;
+        %ul#alert-messages
+
+    - if @course_offering.blank?
+      .row
+        %form.form-horizontal#course_info_form{method: 'post'}
+          %h3.col-xs-offset-1
+            Please provide some information about your course
+          - unless @organizations.blank?
+            .form-group#select_organization_input
+              %label.control-label{for: '#select_organization'}
+                Organization:
+              .col-xs-6
+                %select.form-control#select_organization{required: true}
+                  %option{:value => -2, disabled: true, selected: true}
+                  - @organizations.each do |org|
+                    %option{:value => org.id}
+                      #{org.name}
+                  %option{:value => -1}
+                    Other
+
+            #other_organization_inputs{style: 'display:none'}
+              .form-group
+                %label.control-label{for: '#organization_name'}
+                  Organization name:
+                .col-xs-6
+                  %input.form-control#organization_name{type: 'text',
+                  placeholder:
+                  'e.g. Virginia Tech'}
+
+              .form-group
+                %label.control-label{for: '#organization_abbreviation'}
+                  Organization abbreviation:
+                .col-xs-6
+                  %input.form-control#organization_abbreviation{type: 'text',
+                  placeholder: 'e.g. VT'}
+
+          .form-group#select_term_input
+            %label.control-label{for: '#select_term'}
+              Term:
+            .col-xs-6
+              %select.form-control#select_term{required: true}
+                %option{:value => -2, disabled: true, selected: true}
+                - @terms.each do |term|
+                  %option{:value => term.id}
+                    #{term.display_name}
+
+          .form-group#select_course_input
+            %label.control-label{for: '#select_course'}
+              Course:
+            .col-xs-6
+              %select.form-control#select_course{disabled: true, required: true}
+
+          #other_course_inputs{style: 'display:none'}
+            .form-group
+              %label.control-label{for: '#course_number'}
+                Course number:
+              .col-xs-6
+                %input.form-control#course_number{type: 'text', placeholder:
+                'e.g.
+                CS3114'}
+
+            .form-group
+              %label.control-label{for: '#course_name'}
+                Course name:
+              .col-xs-6
+                %input.form-control#course_name{type: 'text', placeholder: 'e.g.
+                Data Structures and Algorithms'}
+
+          .col-xs-offset-5
+            = submit_tag 'Submit', class: 'btn btn-primary'
+
+    </pre>
+    In the code above, it checks if the course offering is blank which means
+    that an exercise is being added for the first time for this course and it
+    shows a form to track the course and associate exercises with that course.
+    Most of the work to here is done through the javaScript
+    (apps/assests/javascripts/lti_resource.js).<br><br>
+
+    <pre>
+      (function () {
+        $(document).ready(function () {
+          hasOrg = typeof window.organization_id !== 'undefined';
+
+          $('#dismiss-button').on('click', function (event) {
+            $('#alert-box').css('display', 'none');
+          });
+
+          if (window.course_offering_id) {
+            // course offering already exists, let them pick an
+            exercise/visualization
+            initializeJsTree();
+          }
+  </pre>
+  First it checks what organization is this request from and if the course
+  offering exists then it lets them pick an exercise/visualization otherwise it
+  asks the instructor to provide some information as shown in the image above.
+  In the code below it checks if the organization does not exist then it
+  creates orgranization, course and course offering.<br><br>
+  <pre>
+    else {
+      $('#course_info_form').on('submit', function (event) {
+        event.preventDefault();
+        orgId = hasOrg ? window.organization_id :
+        $('#select_organization').val();
+        courseId = $('#select_course').val();
+        if (orgId == -1) {
+          // need to create organization, course, and course offering
+          $.ajax({
+            url: '/organizations',
+            type: 'post',
+            data: 'organization_name=' + $('#organization_name').val() +
+            '&organization_abbreviation=' +
+            $('#organization_abbreviation').val()
+          }).done(function (data) {
+            $('#alert-box').css('display', 'none');
+            var courseNumber = $('#course_number').val();
+            var courseName = $('#course_name').val();
+            createCourse(courseNumber, courseName, data.id);
+          }).fail(function (data) {
+            displayErrors(data.responseJSON);
+          });
+        }
+      </pre>
+      If the organization exists but the course does not exist then it creates
+      course and course offering.<br><br>
+      <pre>
+        else if (courseId == -1) {
+          // need to create course and course offering
+          var courseNumber = $('#course_number').val();
+          var courseName = $('#course_name').val();
+          createCourse(courseNumber, courseName, orgId);
+        }
+      </pre>
+      And if course also exists then it creates a course offering within that
+      course.<br><br>
+      <pre>
+        else {
+          // just need to create course offering
+          createCourseOffering(orgId, courseId);
+        }
+      });
+    </pre>
+
+  </span>
+</div>

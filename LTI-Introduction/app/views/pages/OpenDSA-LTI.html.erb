@@ -1,0 +1,323 @@
+<div class="row" style="margin:50px">
+  <span class="span12">
+    <div class="text-center">
+      <h1>OpenDSA - an LTI Use Case</h1>
+    </div>
+    <br>
+    <p>
+      OpenDSA is an eBook project developed at Virginia Tech. OpenDSA materials
+      include many visualizations and interactive exercises that support
+      courses in a wide variety of Computer Science-related topics such as Data
+      Structures and Algorithms (DSA), Formal Languages, Finite Automata, and
+      Programming Languages.
+    </p>
+    <h3>OpenDSA Terminologies</h3>
+    <p>
+      <strong>Module:</strong> A single HTML page, corresponding to a single
+      section in a textbook, or a single topic that might be part of a lecture.
+      <br><br>
+      <strong>Book Instance:</strong> Modules collected together form an
+      OpenDSA Book Instance.
+    </p>
+    <p>
+      OpenDSA currently has two hundred instructional modules, where each
+      module is the equivalent to one topic, such as one sorting algorithm.
+      Every algorithm or data structure is illustrated by an interactive
+      algorithm visualization. Students could enter their own test cases to see
+      how the algorithm or data structure works on that input, and they can
+      control the pacing of the visualization. <a
+      href="https://opendsa-server.cs.vt.edu/home/about"> Click here</a> to
+      read more about OpenDSA.
+    </p>
+    <p>
+      OpenDSA implements LTI therefore, it can be easily integrated in Learning
+      Management Systems. In Canvas, there are two ways to add OpenDSA content,
+      one is to add using External Tools, which uses LTI and the second method
+      is to go on OpenDSA website, create a book instance and it automatically
+      creates all the exercises as a module in OpenDSA. But this later feature
+      is only available for Canvas because it uses Canvas API to create modules
+      in Canvas.
+    </p>
+    <p>
+      OpenDSA implements LTI controller and there are two types of LTI requests
+      in OpenDSA, one is for a student and other is for instructors. When an
+      instructor adds an OpenDSA content, he
+      sees a list of exercises he can add and for that a
+      <strong>resource</strong> endpoint is
+      called. <strong>Launch</strong> endpoint is called when a student
+      accesses OpenDSA exercise.
+    </p>
+    In start of LTI controller it allows launch and a resource endpoint to open
+    in an iframe.<br><br>
+    <pre>
+      after_action :allow_iframe, only: [:launch, :resource]
+    </pre>
+
+    We will begin with explanation of launch endpoint here. Once OpenDSA
+    content is added into a course,and when a student clicks on an OpenDSA
+    exercise it sends an LTI request to the launch endpoint.
+    Within the launch endpoint, it first validates if 'custom_inst_book_id' is
+    avaiable or not. This is a custom parameter, and it checks if this
+    parameter is available then the custom book instance was created on OpenDSA
+    website and modules were created using Canvas API. If the book instance is
+    not present, it calls the endpoint 'launch_ex'.<br><br>
+    <pre>
+      unless params.key?(:custom_inst_book_id)
+        launch_ex
+        return
+      end
+    </pre>
+
+    After that within the launch endpoint, it finds the custom book instance
+    and from custom book a course offering is fetched. In OpenDSA, a course
+    offering is a way to uniquely identify a course.<br><br>
+    <pre>
+      # must include the oauth proxy object
+      require 'oauth/request_proxy/rack_request'
+      @inst_book = InstBook.find_by(id: params[:custom_inst_book_id])
+      @course_offering = CourseOffering.find_by(id:
+      @inst_book.course_offering_id)
+    </pre>
+    Once, a book instance and course offering is fetched, it validates if it is
+    an authentic LTI request or not.<br><br>
+
+    <pre>
+      $oauth_creds = LmsAccess.get_oauth_creds(params[:oauth_consumer_key])
+      render('error') and return unless lti_authorize!
+    </pre>
+
+    Here OpenDSA fetches credentials from public authetication key received in
+    a request and calls 'lti_authorize!' endpoint.<br> <br>
+
+    Within lti_authorize endpoint, it creates a tool provider object from the
+    authentication object created above. If a key and secret does not match, it
+    throws an error and return.<br><br>
+
+    <pre>
+      def lti_authorize!
+        if key = params['oauth_consumer_key']
+          if secret = $oauth_creds[key]
+            @tp = IMS::LTI::ToolProvider.new(key, secret, params)
+          else
+            @tp = IMS::LTI::ToolProvider.new(nil, nil, params)
+            @tp.lti_msg = "Your consumer didn't use a recognized key."
+            @tp.lti_errorlog = "You did it wrong!"
+            @message = "Consumer key wasn't recognized"
+            return false
+          end
+        else
+          render("No consumer key")
+          return false
+        end
+    </pre>
+
+    Once, key and a secret matches, it then within the same 'lti_authorize!'
+    endpoint checks if the request is valid or not, or if the timestamp on
+    request is too old. If so, then it returns an error otherwise, it return
+    true to launch endpoint which means the request is valid.<br><br>
+
+    <pre>
+        if !params.has_key?(:selection_directive)
+          if !@tp.valid_request?(request)
+            @message = "The OAuth signature was invalid"
+            return false
+          end
+
+          if Time.now.utc.to_i - @tp.request_oauth_timestamp.to_i > 60*60
+            @message = "Your request is too old."
+            return false
+          end
+
+          if was_nonce_used_in_last_x_minutes?(@tp.request_oauth_nonce, 60)
+            @message = "Why are you reusing the nonce?"
+            return false
+          end
+        end
+
+        return true
+      end
+    </pre>
+
+    Once the request has been validated, then within the launch endpoint, it
+    then calls ensure_user.<br><br>
+
+    <pre>
+      ensure_user()
+    </pre>
+
+    Within 'ensure_user' it first checks if a user with a same email exists and
+    creates a new user it that email is not found and finally signs in that
+    user to starts his session.<br><br>
+    <pre>
+      def ensure_user
+        email = params[:lis_person_contact_email_primary]
+        @user = User.where(email: email).first
+        if @user.blank?
+          # TODO: should mark this as LMS user then prevent this user from
+          login to opendsa domain
+          @user = User.new(:email => email,
+                           :password => email,
+                           :password_confirmation => email,
+                           :first_name => params[:lis_person_name_given],
+                           :last_name => params[:lis_person_name_family])
+          @user.save
+        end
+        sign_in @user
+      end
+    </pre>
+
+    Once it creates a new user, it then enrolls a user into course.<br><br>
+    <pre>
+      lti_enroll(@course_offering)
+    </pre>
+
+    Within 'lti_enroll', it first check if the course exists and it allows
+    users to enroll or not and finally it enrolls the user if he has not
+    already enrolled.<br><br>
+    <pre>
+      def lti_enroll(course_offering, role = CourseRole.student)
+        if course_offering &&
+          course_offering.can_enroll? &&
+          !course_offering.is_enrolled?(current_user)
+
+          CourseEnrollment.create(
+            course_offering: course_offering,
+            user: current_user,
+            course_role: role)
+        end
+      end
+    </pre>
+
+    Once the request has been validated and a user has been enrolled, it shows
+    a book to a student.<br><br>
+    <pre>
+      @section_html = File.read(File.join('public/OpenDSA/Books',
+                                params[:custom_book_path],
+                                '/lti_html/',
+                                "#{params[:custom_section_file_name].to_s}.html"
+                                )) and return
+    end
+  </pre>
+
+  Once, student finishes an exercise, it sends a request to <strong>assessment</strong> endpoint from javaScript which sends score back to Tool Consumer if the request was called as an assessment.
+  <br><br>
+  Initially it checks if the exercise is from a book or a course offering and then it fetches the number of attempts on the exercise and the progress of a student from the book (or course offering) exercise id and user id.<br><br>
+  <pre>
+
+  def assessment
+    request_params = JSON.parse(request.body.read.to_s)
+    hasBook = request_params.key?('instBookId')
+
+    if hasBook
+      inst_section = InstSection.find_by(id: request_params['instSectionId'])
+
+      @odsa_exercise_attempts = OdsaExerciseAttempt.where("inst_book_section_exercise_id=? AND user_id=?",
+                                  request_params['instBookSectionExerciseId'], current_user.id).select(
+                                  "id, user_id, question_name, request_type,
+                                  correct, worth_credit, time_done, time_taken, earned_proficiency, points_earned,
+                                  pe_score, pe_steps_fixed")
+      @odsa_exercise_progress = OdsaExerciseProgress.where("inst_book_section_exercise_id=? AND user_id=?",
+                                  request_params['instBookSectionExerciseId'], current_user.id).select("user_id, current_score, highest_score,
+                                  total_correct, proficient_date,first_done, last_done")
+    else
+      @odsa_exercise_attempts = OdsaExerciseAttempt.where("inst_course_offering_exercise_id=? AND user_id=?",
+                                  request_params['instCourseOfferingExerciseId'], current_user.id).select(
+                                  "id, user_id, question_name, request_type,
+                                  correct, worth_credit, time_done, time_taken, earned_proficiency, points_earned,
+                                  pe_score, pe_steps_fixed")
+      @odsa_exercise_progress = OdsaExerciseProgress.where("inst_course_offering_exercise_id=? AND user_id=?",
+                                  request_params['instCourseOfferingExerciseId'], current_user.id).select("user_id, current_score, highest_score,
+                                  total_correct, proficient_date,first_done, last_done")
+    end
+    </pre>
+
+    Once progress and attempts has been fetched, it shows the result in tabular form to student.<br><br>
+    <pre>
+    a = @odsa_exercise_attempts
+    b = @odsa_exercise_progress
+    TableHelper.arg(a, b)
+    f = render_to_string "lti/table.html.erb"
+    </pre>
+
+    After that, it fetches the launch parameters from the request and finds the authetication credentials associated with the public consumer key.<br><br>
+    <pre>
+      launch_params = request_params['toParams']['launch_params']
+      if launch_params
+        key = launch_params['oauth_consumer_key']
+        $oauth_creds = LmsAccess.get_oauth_creds(key)
+      else
+        @message = "The tool never launched"
+        render(:error)
+      end
+
+    </pre>
+
+    Once the credentials have been fetched, it submits the score back to tool
+    consumer.<br><br>
+    <pre>
+      lti_param = {
+        "lis_outcome_service_url" => "#{launch_params['lis_outcome_service_url']}",
+        "lis_result_sourcedid" => "#{launch_params['lis_result_sourcedid']}"
+      }
+      @tp = IMS::LTI::ToolProvider.new(key, $oauth_creds[key], lti_param)
+
+      @tp.extend IMS::LTI::Extensions::OutcomeData::ToolProvider
+
+      if !@tp.outcome_service?
+        @message = "This tool wasn't lunched as an outcome service"
+        render(:error)
+      end
+
+      # post the given score to the TC
+      score = (request_params['toParams']['score'] != '' ? request_params['toParams']['score'] : nil)
+      #res = @tp.post_replace_result!(score)
+      res = @tp.post_extended_replace_result!(score: score, text: f)
+    </pre>
+    This code creates a tool provider object using the
+    key and a secret and after that it extends the tool provider object with
+    the OutcomeData extension provided by the IMS-LTI gem.
+    <br>
+    First it checks whether the tool was launched as an
+    outcome service or not.
+    This means that if the tool was launched as an assignment,
+    then OpenDSA has to send the final result of an assessment back to the tool
+    consumer.
+    Therefore, in its request it
+    sends <strong><em>lis_outcome_service_url</em></strong>
+    and <strong><em>lis_result_sourcedid</em></strong>.
+    The fist parameter is a URL used to send the score back, and
+    the second parameter identifies a unique row and column within
+    the Tool Consumer's gradebook.
+    If these two parameters are not present, then it throws as error and
+    otherwise it posts the result back to the tool consumer.
+    The IMS-LTI gem enables to accomplish all
+    of this using 'post_extended_replace_result'.
+
+    <br><br>
+    Once the result has been posted and if the exercise was launched from a
+    book instance it saves the time of result posted for that instance.<br><br>
+    <pre>
+      if res.success?
+        if hasBook
+          inst_section.lms_posted = true
+          inst_section.time_posted = Time.now
+          inst_section.save!
+        end
+        render :json => { :message => 'success', :res => res.to_json }.to_json
+      else
+        if hasBook
+          inst_section.lms_posted = false
+          inst_section.save!
+        end
+        render :json => { :message => 'failure', :res => res.to_json }.to_json, :status => :bad_request
+        error = Error.new(:class_name => 'post_replace_result_fail',
+            :message => res.inspect, :params => lti_param.to_s)
+        error.save!
+      end
+    </pre>
+    <br>
+
+    Click <%= link_to "here", lti_opendsa_instructor_path %> to view how OpenDSA implements LTI when instructors adds exercises to their courses.
+
+  </span>
+</div>
