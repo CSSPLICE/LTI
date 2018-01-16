@@ -29,6 +29,7 @@
       href="https://opendsa-server.cs.vt.edu/home/about"> Click here</a> to
       read more about OpenDSA.
     </p>
+    <h3>LTI in OpenDSA</h3>
     <p>
       OpenDSA implements LTI therefore, it can be easily integrated in Learning
       Management Systems. In Canvas, there are two ways to add OpenDSA content,
@@ -57,7 +58,7 @@
     content is added into a course,and when a student clicks on an OpenDSA
     exercise it sends an LTI request to the launch endpoint.
     Within the launch endpoint, it first validates if 'custom_inst_book_id' is
-    avaiable or not. This is a custom parameter, and it checks if this
+    available or not. This is a custom parameter, and it checks if this
     parameter is available then the custom book instance was created on OpenDSA
     website and modules were created using Canvas API. If the book instance is
     not present, it calls the endpoint 'launch_ex'.<br><br>
@@ -86,7 +87,7 @@
       render('error') and return unless lti_authorize!
     </pre>
 
-    Here OpenDSA fetches credentials from public authetication key received in
+    Here OpenDSA fetches credentials from public authentication key received in
     a request and calls 'lti_authorize!' endpoint.<br> <br>
 
     Within lti_authorize endpoint, it creates a tool provider object from the
@@ -199,7 +200,7 @@
     end
   </pre>
 
-  Once, student finishes an exercise, it sends a request to <strong>assessment</strong> endpoint from javaScript which sends score back to Tool Consumer if the request was called as an assessment.
+  Once, student finishes an exercise, it sends a request to <strong>assessment</strong> endpoint from JavaScript which sends score back to Tool Consumer if the request was called as an assessment.
   <br><br>
   Initially it checks if the exercise is from a book or a course offering and then it fetches the number of attempts on the exercise and the progress of a student from the book (or course offering) exercise id and user id.<br><br>
   <pre>
@@ -239,7 +240,7 @@
     f = render_to_string "lti/table.html.erb"
     </pre>
 
-    After that, it fetches the launch parameters from the request and finds the authetication credentials associated with the public consumer key.<br><br>
+    After that, it fetches the launch parameters from the request and finds the authentication credentials associated with the public consumer key.<br><br>
     <pre>
       launch_params = request_params['toParams']['launch_params']
       if launch_params

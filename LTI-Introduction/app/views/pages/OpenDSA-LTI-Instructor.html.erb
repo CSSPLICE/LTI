@@ -29,7 +29,7 @@
       lms_instance = ensure_lms_instance()
     </pre>
     Within 'ensure_lms_instance', it creates a new lms instance if it doesn't
-    already exists. This is used to created the correct URL which will be
+    already exists. This is used to create the correct URL which will be
     embeded in the exercise at the end.<br><br>
     <pre>
     def ensure_lms_instance
@@ -74,7 +74,7 @@
 
     render('error') and return unless lti_authorize!
   </pre>
-  Here OpenDSA fetches credentials from public authetication key received in
+  Here OpenDSA fetches credentials from public authentication key received in
   a request and calls 'lti_authorize!' endpoint.<br> <br>
 
   Within lti_authorize endpoint, it creates a tool provider object from the
@@ -258,7 +258,7 @@
     In the code above, it checks if the course offering is blank which means
     that an exercise is being added for the first time for this course and it
     shows a form to track the course and associate exercises with that course.
-    Most of the work to here is done through the javaScript
+    Most of the work to here is done through the JavaScript
     (apps/assests/javascripts/lti_resource.js).<br><br>
 
     <pre>
@@ -280,7 +280,7 @@
   offering exists then it lets them pick an exercise/visualization otherwise it
   asks the instructor to provide some information as shown in the image above.
   In the code below it checks if the organization does not exist then it
-  creates orgranization, course and course offering.<br><br>
+  creates organization, course and course offering.<br><br>
   <pre>
     else {
       $('#course_info_form').on('submit', function (event) {
