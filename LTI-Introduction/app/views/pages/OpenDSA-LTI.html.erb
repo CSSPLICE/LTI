@@ -17,11 +17,11 @@
       section in a textbook, or a single topic that might be part of a lecture.
       <br><br>
       <strong>Book Instance:</strong> Modules collected together form an
-      OpenDSA Book Instance.
+      OpenDSA Book Instance.<br><br>
       <strong>Course Offering</strong> Course offering is a way to uniquely
       identify a course. It is a combination of organization and course name.
-      For example, Virginia Tech is an organization, CS3114 is a course and
-      course offering is a unique instance of each CS3114 offered at Virginia
+      For example, Virginia Tech is an organization, CS 3114 is a course and
+      course offering is a unique instance of each CS 3114 offered at Virginia
       Tech.
     </p>
     <p>
@@ -34,34 +34,47 @@
       href="https://opendsa-server.cs.vt.edu/home/about"> Click here</a> to
       read more about OpenDSA.
     </p>
+    <h3>OpenDSA Instructions</h3>
+    <p>
+      OpenDSA can be added as either graded or ungraded
+      content.</strong> To insert as OpenDSA content in your course
+      follow the steps mentioned
+      <%= link_to "here", lti_instructions_opendsa_path %>
+    </p>
     <h3>LTI in OpenDSA</h3>
     <p>
       OpenDSA implements LTI therefore, it can be easily integrated in Learning
-      Management Systems. In Canvas, there are two ways to add OpenDSA content,
-      one is to add using External Tools, which uses LTI and the second method
-      is to go on OpenDSA website, create a book instance and it automatically
-      creates all the exercises as a module in OpenDSA. But this later feature
-      is only available for Canvas because it uses Canvas API to create modules
-      in Canvas.
+      Management Systems. OpenDSA exercise in Canvas looks like:
+      <div class="text-center">
+        <%= image_tag "OpenDSA/tree_exercise.png", style:'width:40%' %>
+      </div>
+      This exercise shown above looks like a part of Canvas course which is
+      accomplished through LTI. In Canvas, there are two ways to add OpenDSA
+      content, one is to add using External Tools, which uses LTI and the
+      second method is to go on OpenDSA website, create a book instance and it
+      automatically creates all the exercises as a modules in Canvas. But this
+      later feature is only available for Canvas because it uses Canvas API to
+      create modules in Canvas.
     </p>
     <p>
-      OpenDSA implements LTI controller and there are two types of LTI requests
-      in OpenDSA, one is for a student and other is for instructors. When an
-      instructor adds an OpenDSA content, he
-      sees a list of exercises he can add and for that a
-      <strong>resource</strong> endpoint is
-      called. <strong>Launch</strong> endpoint is called when a student
+      To make use of LTI, OpenDSA implements LTI controller which handles all
+      the LTI requests. There are two types of LTI requests in OpenDSA, one is
+      for a student and other is for instructors. When an instructor adds an
+      OpenDSA content, he sees a list of exercises he can add to his course and
+      for that a <strong>resource</strong> endpoint is called.
+      <strong>Launch</strong> endpoint is called when a student
       accesses OpenDSA exercise.
     </p>
-    In start of LTI controller it allows launch and a resource endpoint to open
-    in an iframe.<br><br>
+    In start of LTI controller (apps/controllers/lti_controller.rb) it allows
+    launch and a resource endpoint to open in an iframe. This allows OpenDSA
+    exercises to embed in LMS.<br><br>
     <pre>
       after_action :allow_iframe, only: [:launch, :resource]
     </pre>
 
     We will begin with explanation of launch endpoint here. Once OpenDSA
-    content is added into a course,and when a student clicks on an OpenDSA
-    exercise it sends an LTI request to the launch endpoint.
+    content is added into a course and a student clicks on an OpenDSA
+    exercise, it sends an LTI request to the launch endpoint.
     Within the launch endpoint, it first validates if 'custom_inst_book_id' is
     available or not. This is a custom parameter, and it checks if this
     parameter is available then the custom book instance was created on OpenDSA
@@ -74,9 +87,10 @@
       end
     </pre>
 
-    After that within the launch endpoint, it finds the custom book instance
-    and from custom book a course offering is fetched. In OpenDSA, a course
-    offering is a way to uniquely identify a course.<br><br>
+    After that within the launch endpoint, it finds the book instance from
+    custom book instance id received in the request and from the book instance,
+    it fetches a course offering this book instance belongs to. In OpenDSA, a
+    course offering is a way to uniquely identify a course.<br><br>
     <pre>
       # must include the oauth proxy object
       require 'oauth/request_proxy/rack_request'
@@ -85,15 +99,14 @@
       @inst_book.course_offering_id)
     </pre>
     Once, a book instance and course offering is fetched, it validates if it is
-    an authentic LTI request or not.<br><br>
+    an authentic LTI request or not. To do so, it first fetches credentials
+    (unique secret) from public authentication key received in
+    a request and calls 'lti_authorize!' endpoint.<br><br>
 
     <pre>
       $oauth_creds = LmsAccess.get_oauth_creds(params[:oauth_consumer_key])
       render('error') and return unless lti_authorize!
     </pre>
-
-    Here OpenDSA fetches credentials from public authentication key received in
-    a request and calls 'lti_authorize!' endpoint.<br> <br>
 
     Within lti_authorize endpoint, it creates a tool provider object from the
     authentication object created above. If a key and secret does not match, it
@@ -144,8 +157,8 @@
       end
     </pre>
 
-    Once the request has been validated, then within the launch endpoint, it
-    then calls ensure_user.<br><br>
+    Once the request has been validated, it returns to launch endpoint and in
+    the next step it calls 'ensure_user'.<br><br>
 
     <pre>
       ensure_user()
@@ -153,7 +166,7 @@
 
     Within 'ensure_user' it first checks if a user with a same email exists and
     creates a new user it that email is not found and finally signs in that
-    user to starts his session.<br><br>
+    user to start his session.<br><br>
     <pre>
       def ensure_user
         email = params[:lis_person_contact_email_primary]
@@ -172,14 +185,15 @@
       end
     </pre>
 
-    Once it creates a new user, it then enrolls a user into course.<br><br>
+    Once it creates a new user, it then calls 'lti_enroll' with course offering
+    object which enrolls user into this course.<br><br>
     <pre>
       lti_enroll(@course_offering)
     </pre>
 
-    Within 'lti_enroll', it first check if the course exists and it allows
-    users to enroll or not and finally it enrolls the user if he has not
-    already enrolled.<br><br>
+    Within 'lti_enroll', it first checks if the course offering exists and it
+    allows users to enroll or not and finally it enrolls the user if he has not
+    already enrolled into this specific course offering.<br><br>
     <pre>
       def lti_enroll(course_offering, role = CourseRole.student)
         if course_offering &&
@@ -195,7 +209,7 @@
     </pre>
 
     Once the request has been validated and a user has been enrolled, it shows
-    a book to a student.<br><br>
+    an exercise to a student.<br><br>
     <pre>
       @section_html = File.read(File.join('public/OpenDSA/Books',
                                 params[:custom_book_path],
@@ -209,9 +223,11 @@
   <strong>assessment</strong> endpoint from JavaScript which sends score back
   to Tool Consumer if the request was called as an assessment.
   <br><br>
-  Initially it checks if the exercise is from a book or a course offering and
-  then it fetches the number of attempts on the exercise and the progress of a
-  student from the book (or course offering) exercise id and user id.<br><br>
+  Within assessment endpoint, initially it checks if the exercise is from a
+  book instance or not. If exercise if from a book instance then the request
+  will have 'instBookSectionExerciseId' parameter and it fetches number of
+  attempts on this exercise and current progress of a student using the book
+  instance exercise id and user id.<br><br>
   <pre>
 
   def assessment
@@ -237,6 +253,13 @@
                                   current_score, highest_score,
                                   total_correct, proficient_date,first_done,
                                   last_done")
+    </pre>
+    If exercise is not from a book instance then the request will have
+    'instCourseOfferingExerciseId' parameter, which means that individual
+    exercise is directly added to the course. Here it fetches number of
+    attempts on this exercise and current progress of a student using the
+    course offering exercise id and user id.<br><br>
+    <pre>
     else
       @odsa_exercise_attempts =
       OdsaExerciseAttempt.where("inst_course_offering_exercise_id=? AND
@@ -258,7 +281,7 @@
     end
     </pre>
 
-    Once progress and attempts has been fetched, it shows the result in tabular
+    Once progress and attempts have been fetched, it shows the result in tabular
     form to student.<br><br>
     <pre>
     a = @odsa_exercise_attempts
@@ -278,11 +301,12 @@
         @message = "The tool never launched"
         render(:error)
       end
-
     </pre>
 
     Once the credentials have been fetched, it submits the score back to tool
-    consumer.<br><br>
+    consumer. It creates a tool provider object using the
+    key and a secret and after that it extends the tool provider object with
+    the OutcomeData extension provided by the IMS-LTI gem.<br><br>
     <pre>
       lti_param = {
         "lis_outcome_service_url" =>
@@ -292,7 +316,10 @@
       @tp = IMS::LTI::ToolProvider.new(key, $oauth_creds[key], lti_param)
 
       @tp.extend IMS::LTI::Extensions::OutcomeData::ToolProvider
-
+    </pre>
+    After that it checks whether the tool was launched as an
+    outcome service or not.<br><br>
+    <pre>
       if !@tp.outcome_service?
         @message = "This tool wasn't lunched as an outcome service"
         render(:error)
@@ -304,12 +331,6 @@
       #res = @tp.post_replace_result!(score)
       res = @tp.post_extended_replace_result!(score: score, text: f)
     </pre>
-    This code creates a tool provider object using the
-    key and a secret and after that it extends the tool provider object with
-    the OutcomeData extension provided by the IMS-LTI gem.
-    <br>
-    First it checks whether the tool was launched as an
-    outcome service or not.
     This means that if the tool was launched as an assignment,
     then OpenDSA has to send the final result of an assessment back to the tool
     consumer.
@@ -323,10 +344,10 @@
     otherwise it posts the result back to the tool consumer.
     The IMS-LTI gem enables to accomplish all
     of this using 'post_extended_replace_result'.
-
     <br><br>
     Once the result has been posted and if the exercise was launched from a
-    book instance it saves the time of result posted for that instance.<br><br>
+    book instance it saves that the result has been posted for this exercise
+    along with current time.<br><br>
     <pre>
       if res.success?
         if hasBook
@@ -335,6 +356,10 @@
           inst_section.save!
         end
         render :json => { :message => 'success', :res => res.to_json }.to_json
+    </pre>
+    If there is some error in posting result, it saves in the database that the
+    result posting failed for this instance and throws an error.<br><br>
+    <pre>
       else
         if hasBook
           inst_section.lms_posted = false
@@ -349,8 +374,10 @@
     </pre>
     <br>
 
-    Click <%= link_to "here", lti_opendsa_instructor_path %> to view how
-    OpenDSA implements LTI when instructors adds exercises to their courses.
+    This is how LTI is implemented in OpenDSA when a student tries to access an
+    OpenDSA exercise through a learning management system. Now, click <%=
+    link_to "here", lti_opendsa_instructor_path %> to read how OpenDSA
+    implements LTI when instructors adds exercises to their courses.
 
   </span>
 </div>

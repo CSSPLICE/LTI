@@ -46,9 +46,10 @@
       return lms_instance
     end
     </pre>
-    Once LMS instance is fetched, it fetches the course offering with LMS
-    instance id and course number received in request and creates a launch
-    url.<br><br>
+    Once LMS instance is fetched, it fetches the course offering using LMS
+    instance id and course number received in request (in
+    custom_canvas_course_id parameter). In OpenDSA, a
+    course offering is a unique way to indentify a course. <br><br>
     <pre>
     @lms_course_num = params[:custom_canvas_course_id]
     @lms_course_code = params[:context_label]
@@ -62,11 +63,17 @@
       end
       @terms = Term.on_or_future
     end
+    </pre>
+    Then it creates a launch url of OpenDSA from request object. Protocol is
+    http or https, and host with post is complete url where OpenDSA is hosted.
+    <br><br>
 
+  <pre>
     @launch_url = request.protocol + request.host_with_port + "/lti/launch"
   </pre>
 
-  After that it validates if it is an authentic LTI request or not.<br><br>
+  After that it validates if request received from Tool Consumer is an
+  authentic LTI request or not.<br><br>
   <pre>
     # must include the oauth proxy object
     require 'oauth/request_proxy/rack_request'
@@ -74,8 +81,8 @@
 
     render('error') and return unless lti_authorize!
   </pre>
-  Here OpenDSA fetches credentials from public authentication key received in
-  a request and calls 'lti_authorize!' endpoint.<br> <br>
+  Here OpenDSA fetches credentials (secret) from public authentication key
+  received in a request and calls 'lti_authorize!' endpoint.<br> <br>
 
   Within lti_authorize endpoint, it creates a tool provider object from the
   authentication object created above. If a key and secret does not match, it
@@ -126,8 +133,8 @@
     end
   </pre>
 
-  Once the request has been validated, then within the resource endpoint, it
-  signs in the user.<br><br>
+  Once the request has been validated, it returns to resource endpoint and
+  signs in the user in the next step.<br><br>
 
   <pre>
     @user = User.where(email: params[:lis_person_contact_email_primary]).first
@@ -137,7 +144,7 @@
   Finally it parses RST files and fetches the names of all exercises and shows
   lti_resource layout which opens 'views/lti/resource.html.haml'. The names of
   these exercises will be later shown to instructors in a tree view from where
-  they can select an exercise to add to their courses.<br><br>
+  they can select exercises to add to their courses.<br><br>
 
   <pre>
     require 'RST/rst_parser'
