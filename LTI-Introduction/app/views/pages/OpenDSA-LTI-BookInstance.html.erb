@@ -5,76 +5,19 @@
     </div>
     <br>
     <p>
-      OpenDSA is an eBook project developed at Virginia Tech. OpenDSA materials
-      include many visualizations and interactive exercises that support
-      courses in a wide variety of Computer Science-related topics such as Data
-      Structures and Algorithms (DSA), Formal Languages, Finite Automata, and
-      Programming Languages.
+      Previously we have shown <%= link_to "here", lti_opendsa_path %> how
+      OpenDSA implements LTI when a student tries to access a standalone
+      exercise from a tool consumer. Here we explain further the launch
+      endpoint that how OpenDSA makes use of LTI when a student accesses an
+      exercise from an OpenDSA book instance (generated through OpenDSA
+      website). Note that a <strong>Launch</strong> endpoint is called when a
+      student accesses OpenDSA exercise and a <strong>resource</strong>
+      endpoint is called when an instructor adds an OpenDSA content and he sees
+      a list of exercises he can add to his course.
     </p>
-    <h3>OpenDSA Terminologies</h3>
-    <p>
-      <strong>Module:</strong> A single HTML page, corresponding to a single
-      section in a textbook, or a single topic that might be part of a lecture.
-      <br><br>
-      <strong>Book Instance:</strong> Modules collected together form an
-      OpenDSA Book Instance.<br><br>
-      <strong>Course Offering</strong> Course offering is a way to uniquely
-      identify a course. It is a combination of organization and course name.
-      For example, Virginia Tech is an organization, CS 3114 is a course and
-      course offering is a unique instance of each CS 3114 offered at Virginia
-      Tech.
-    </p>
-    <p>
-      OpenDSA currently has two hundred instructional modules, where each
-      module is the equivalent to one topic, such as one sorting algorithm.
-      Every algorithm or data structure is illustrated by an interactive
-      algorithm visualization. Students could enter their own test cases to see
-      how the algorithm or data structure works on that input, and they can
-      control the pacing of the visualization. <a
-      href="https://opendsa-server.cs.vt.edu/home/about"> Click here</a> to
-      read more about OpenDSA.
-    </p>
-    <h3>OpenDSA Instructions</h3>
-    <p>
-      OpenDSA can be added as either graded or ungraded
-      content.</strong> To insert as OpenDSA content in your course
-      follow the steps mentioned
-      <%= link_to "here", lti_instructions_opendsa_path %>
-    </p>
-    <h3>LTI in OpenDSA</h3>
-    <p>
-      OpenDSA implements LTI therefore, it can be easily integrated in Learning
-      Management Systems. OpenDSA exercise in Canvas looks like:
-      <div class="text-center">
-        <%= image_tag "OpenDSA/tree_exercise.png", style:'width:40%' %>
-      </div>
-      This exercise shown above looks like a part of Canvas course which is
-      accomplished through LTI. In Canvas, there are two ways to add OpenDSA
-      content, one is to add using External Tools, which uses LTI and the
-      second method is to go on OpenDSA website, create a book instance and it
-      automatically creates all the exercises as a modules in Canvas. But this
-      later feature is only available for Canvas because it uses Canvas API to
-      create modules in Canvas.
-    </p>
-    <p>
-      To make use of LTI, OpenDSA implements LTI controller which handles all
-      the LTI requests. There are two types of LTI requests in OpenDSA, one is
-      for a student and other is for instructors. When an instructor adds an
-      OpenDSA content, he sees a list of exercises he can add to his course and
-      for that a <strong>resource</strong> endpoint is called.
-      <strong>Launch</strong> endpoint is called when a student
-      accesses OpenDSA exercise.
-    </p>
-    In start of LTI controller (apps/controllers/lti_controller.rb) it allows
-    launch and a resource endpoint to open in an iframe. This allows OpenDSA
-    exercises to embed in LMS.<br><br>
-    <pre>
-      after_action :allow_iframe, only: [:launch, :resource]
-    </pre>
 
-    We will begin with explanation of launch endpoint here. Once OpenDSA
-    content is added into a course and a student clicks on an OpenDSA
-    exercise, it sends an LTI request to the launch endpoint.
+    Once OpenDSA content is added into a course and a student clicks on an
+    OpenDSA exercise, it sends an LTI request to the launch endpoint.
     Within the launch endpoint, it first validates if 'custom_inst_book_id' is
     available or not. This is a custom parameter, and it checks if this
     parameter is available then the custom book instance was created on OpenDSA
@@ -88,27 +31,24 @@
       end
     </pre>
 
-    Now first we will cover launch_ex endpoint <strong> which means a standalone
-    exercise is launched by the student.</strong> To add standalone graded
-    exercise in your course follow the steps mentioned
-    <%= link_to "here", lti_instructions_opendsa_path %>.<br><br>
-
-    When a student clicks on an assignment, first steps that are performed are
-    that it first fetches credentials (unique secret) from public
-    authentication key received in a request and find course offering to which
-    assignment belongs to<br><br>
+    After that within the launch endpoint, it finds the book instance from
+    custom book instance id received in the request and from the book instance,
+    it fetches a course offering this book instance belongs to. In OpenDSA, a
+    course offering is a way to uniquely identify a course.<br><br>
     <pre>
-    def launch_ex
+      # must include the oauth proxy object
       require 'oauth/request_proxy/rack_request'
-      $oauth_creds = LmsAccess.get_oauth_creds(params[:oauth_consumer_key])
-      course_offering = CourseOffering.joins(:lms_instance).where(
-        lms_instances: {url: params[:custom_canvas_api_base_url]},
-        course_offerings: {lms_course_num: params[:custom_canvas_course_id]}
-      ).first
+      @inst_book = InstBook.find_by(id: params[:custom_inst_book_id])
+      @course_offering = CourseOffering.find_by(id:
+      @inst_book.course_offering_id)
     </pre>
-    After that it calls 'lti_authorize!' endpoint to validate the request
-    received.<br><br>
+    Once, a book instance and course offering is fetched, it validates if it is
+    an authentic LTI request or not. To do so, it first fetches credentials
+    (unique secret) from public authentication key received in
+    a request and calls 'lti_authorize!' endpoint.<br><br>
+
     <pre>
+      $oauth_creds = LmsAccess.get_oauth_creds(params[:oauth_consumer_key])
       render('error') and return unless lti_authorize!
     </pre>
 
@@ -161,8 +101,9 @@
       end
     </pre>
 
-    Once the request has been validated, it returns to launch_ex endpoint and in
+    Once the request has been validated, it returns to launch endpoint and in
     the next step it calls 'ensure_user'.<br><br>
+
     <pre>
       ensure_user()
     </pre>
@@ -211,55 +152,16 @@
       end
     </pre>
 
-    Once the request has been validated and a user has been enrolled, it uses
-    RST parser which parses the names of exercises in RST files and finds the
-    current exercise with its name.<br><br>
-
+    Once the request has been validated and a user has been enrolled, it shows
+    an exercise to a student.<br><br>
     <pre>
-      require 'RST/rst_parser'
-      @ex = RstParser.get_exercise_map()[params[:ex_short_name]]
-    </pre>
-
-    After that, it finds the course offering exercise object with course
-    offering id and resource_link_id object received in a request. A
-    resource_link_id is a unique id referencing the link, or placement, of the
-    tool within the consumer's pages.<br><br>
-
-    <pre>
-      @course_off_ex = InstCourseOfferingExercise.find_by(
-        course_offering_id: course_offering.id,
-        resource_link_id: params[:resource_link_id]
-      )
-    </pre>
-    If this exercise is launched first time, then it will not find this
-    exercise linked to course offering and it then links the current exercise
-    with course offering.<br><br>
-    <pre>
-      if @course_off_ex.blank?
-        @course_off_ex = InstCourseOfferingExercise.new(
-          course_offering: course_offering,
-          inst_exercise_id: @ex.id,
-          resource_link_id: params[:resource_link_id],
-          resource_link_title: params[:resource_link_title],
-          threshold: @ex.threshold
-        )
-        @course_off_ex.save
-      end
-    </pre>
-
-    Once the exercise is linked to the course offering, the last thing left is
-    to show the exercise to user. There are two kinds of exercises in OpenDSA,
-    one is avembed which have their own html pages and others is inlineav which
-    are generted through JavaScript and CSS. It checks the type of exercise and
-    renders the respective layout to user. <br><br>
-    <pre>
-      if @ex.instance_of?(AvEmbed)
-        render "launch_avembed", layout: 'lti_launch' #own html page
-      else
-        render 'launch_inlineav', layout: 'lti_launch'
-      end
+      @section_html = File.read(File.join('public/OpenDSA/Books',
+                                params[:custom_book_path],
+                                '/lti_html/',
+                                "#{params[:custom_section_file_name].to_s}.html"
+                                )) and return
     end
-    </pre>
+  </pre>
 
   Once, student finishes an exercise, it sends a request to
   <strong>assessment</strong> endpoint from JavaScript which sends score back
@@ -416,12 +318,10 @@
     </pre>
     <br>
 
-    This is how LTI is implemented in OpenDSA when a student tries to access a
-    standalone OpenDSA exercise through a learning management system. Now,
-    click <%= link_to "here", lti_opendsa_bookinstance_path %> to read how
-    OpenDSA implements LTI for a book instance exercise. <br><br>
+    This is how LTI is implemented in OpenDSA when a student tries to access an
+    OpenDSA exercise through a learning management system. Now, click <%=
+    link_to "here", lti_opendsa_instructor_path %> to read how OpenDSA
+    implements LTI when instructors add exercises to their courses.
 
-    Also, click <%= link_to "here", lti_opendsa_instructor_path %> to read how
-    OpenDSA implements LTI when instructors add exercises to their courses.
   </span>
 </div>
