@@ -225,17 +225,27 @@
     end
     </pre>
 
-    Once progress and attempts have been fetched, it shows the result in tabular
-    form to student.<br><br>
+    Once progress and attempts have been fetched, it sends this back in tabular
+    form to Tool Consumer along with the results of exercises and students can
+    view these stats.<br><br>
     <pre>
     a = @odsa_exercise_attempts
     b = @odsa_exercise_progress
     TableHelper.arg(a, b)
     f = render_to_string "lti/table.html.erb"
     </pre>
+    <p>
+      The progress and attempts can be checked in Canvas by clicking on Grades
+      -> [Name of Assignment]. Following in how this result is shown in tabular
+      form in Canvas.
+      <div class="text-center">
+        <%= image_tag "OpenDSA/exercise_progress.png", style:'width:40%' %>
+      </div>
+    </p>
 
     After that, it fetches the launch parameters from the request and finds the
-    authentication credentials associated with the public consumer key.<br><br>
+    authentication credentials associated with the public consumer key so that
+    it can send the results back to tool consumer.<br><br>
     <pre>
       launch_params = request_params['toParams']['launch_params']
       if launch_params
