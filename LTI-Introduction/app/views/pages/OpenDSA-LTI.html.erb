@@ -48,7 +48,7 @@
       <div class="text-center">
         <%= image_tag "OpenDSA/tree_exercise.png", style:'width:40%' %>
       </div>
-      This exercise shown above looks like a part of Canvas course which is
+      This exercise shown above looks like a part of Canvas course, which is
       accomplished through LTI. In Canvas, there are two ways to add OpenDSA
       content, one is to add a standalone exercise using External Tools and the
       second method is to go on OpenDSA website, create a book instance and it
@@ -59,7 +59,7 @@
       show and grade an exercise within tool consumer.
     </p>
     <p>
-      To make use of LTI, OpenDSA implements LTI controller which handles all
+      To make use of LTI, OpenDSA implements LTI controller, which handles all
       the LTI requests. There are two types of LTI requests in OpenDSA, one is
       for a student and other is for instructors. When an instructor adds an
       OpenDSA content, he sees a list of exercises he can add to his course and
@@ -92,13 +92,13 @@
 
     Now first we will cover launch_ex endpoint <strong> which means a standalone
     exercise is launched by the student.</strong> To add standalone graded
-    exercise in your course follow the steps mentioned
+    exercises in your course follow the steps mentioned
     <%= link_to "here", lti_instructions_opendsa_path %>.<br><br>
 
     When a student clicks on an assignment, first steps that are performed are
     that it first fetches credentials (unique secret) from public
     authentication key received in a request and find course offering to which
-    assignment belongs to<br><br>
+    assignment belongs.<br><br>
     <pre>
     def launch_ex
       require 'oauth/request_proxy/rack_request'
@@ -139,7 +139,7 @@
     Once, key and a secret matches, it then within the same 'lti_authorize!'
     endpoint checks if the request is valid or not, or if the timestamp on
     request is too old. If so, then it returns an error otherwise, it return
-    true to launch endpoint which means the request is valid.<br><br>
+    true to launch endpoint, which means the request is valid.<br><br>
 
     <pre>
         if !params.has_key?(:selection_directive)
@@ -191,7 +191,7 @@
     </pre>
 
     Once it creates a new user, it then calls 'lti_enroll' with course offering
-    object which enrolls user into this course.<br><br>
+    object, which enrolls user into this course.<br><br>
     <pre>
       lti_enroll(@course_offering)
     </pre>
@@ -214,7 +214,7 @@
     </pre>
 
     Once the request has been validated and a user has been enrolled, it uses
-    RST parser which parses the names of exercises in RST files and finds the
+    RST parser, which parses the names of exercises in RST files and finds the
     current exercise with its name.<br><br>
 
     <pre>
@@ -251,8 +251,8 @@
 
     Once the exercise is linked to the course offering, the last thing left is
     to show the exercise to user. There are two kinds of exercises in OpenDSA,
-    one is avembed which have their own html pages and others is inlineav which
-    are generted through JavaScript and CSS. It checks the type of exercise and
+    one is avembed, which have their own html pages and other is inlineav, which
+    are generated through JavaScript and CSS. It checks the type of exercise and
     renders the respective layout to user. <br><br>
     <pre>
       if @ex.instance_of?(AvEmbed)

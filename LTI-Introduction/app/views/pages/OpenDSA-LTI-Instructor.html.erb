@@ -17,8 +17,12 @@
       after_action :allow_iframe, only: [:launch, :resource]
     </pre>
 
-    When an instructor adds an OpenDSA content, he sees a list of exercises he
+    When an instructor adds OpenDSA content, he sees a list of exercises he
     can add and for that a <strong>resource</strong> endpoint is called.
+    Following is how the list of exercises are shown:
+    <div class="text-center">
+      <%= image_tag "OpenDSA/exercises.png", style:'width:40%' %>
+    </div>
     <br><br>
 
     Within resource endpoint, the first thing it checks is an LMS instance, for
@@ -29,8 +33,8 @@
       lms_instance = ensure_lms_instance()
     </pre>
     Within 'ensure_lms_instance', it creates a new lms instance if it doesn't
-    already exists. This is used to create the correct URL which will be
-    embeded in the exercise at the end.<br><br>
+    already exists. This is used to create the correct URL, which will be
+    embedded in the exercise at the end.<br><br>
     <pre>
     def ensure_lms_instance
       lms_instance = LmsInstance.find_by(url:
@@ -65,7 +69,7 @@
     end
     </pre>
     Then it creates a launch url of OpenDSA from request object. Protocol is
-    http or https, and host with post is complete url where OpenDSA is hosted.
+    http or https, and host with port is a complete url where OpenDSA is hosted.
     <br><br>
 
   <pre>
@@ -142,7 +146,7 @@
   </pre>
 
   Finally it parses RST files and fetches the names of all exercises and shows
-  lti_resource layout which opens 'views/lti/resource.html.haml'. The names of
+  lti_resource layout, which opens 'views/lti/resource.html.haml'. The names of
   these exercises will be later shown to instructors in a tree view from where
   they can select exercises to add to their courses.<br><br>
 
@@ -262,11 +266,11 @@
             = submit_tag 'Submit', class: 'btn btn-primary'
 
     </pre>
-    In the code above, it checks if the course offering is blank which means
-    that an exercise is being added for the first time for this course and it
-    shows a form to track the course and associate exercises with that course.
-    Most of the work to here is done through the JavaScript
-    (apps/assests/javascripts/lti_resource.js).<br><br>
+    The code above is just to display a form. First it checks if the course
+    offering is blank which means that an exercise is being added for the first
+    time for this course and it shows a form to track the course and associate
+    exercises with that course. Most of the work to here is done through the
+    JavaScript (apps/assests/javascripts/lti_resource.js).<br><br>
 
     <pre>
       (function () {
@@ -332,6 +336,67 @@
         }
       });
     </pre>
+    <p>
+      Once all of this is done and instructor selects an exercise from a tree
+      view a URL is added under Submission Tool URL as shown in the image below:
+      <div class="text-center">
+        <%= image_tag "OpenDSA/submission_tool_url.png", style:'width:40%' %>
+      </div>
+      The complete URL looks something like
+    <strong>https://opendsa-server.cs.vt.edu/lti/launch?ex_short_name=IntroSumm.
+      </strong>
+    </p>
+    This URL is generated in initializeJsTree() function in JavaScript.<br><br>
+    <pre>
+    $('#using_json')
+
+      // listen for select event
+      .on('select_node.jstree', function (e, data) {
+        var selected = data.instance.get_node(data.selected);
+        if (selected.original.type === 'section') {
+          console.log(getResourceURL(selected.original.url_params));
+          window.location.href = getResourceURL(selected.original.url_params);
+        }
+      })
+
+      .jstree({
+        'core': {
+          'data': [{
+            'text': 'OpenDSA Exercises and Visualizations',
+            'state': {
+              'opened': true,
+              'selected': true
+            },
+            'children': chapters
+          }]
+        }
+      });
+    </pre>
+    The code above is executed on the selection of an exercise. The code above
+    calls getResourceURL, which generates the URL and assigns it to Submission
+    Tool URL field. Following is a code of getResourceURL.<br><br>
+    <pre>
+      var getResourceURL = function (obj) {
+        if (!$.isEmptyObject(obj)) {
+          var odsa_url = odsa_launch_url + '?' + $.param(obj);
+          var urlParams = {
+            'embed_type': 'basic_lti',
+            'url': odsa_url
+          };
+          return return_url + '?' + $.param(urlParams);
+        }
+        return '';
+      };
+    </pre>
+    Here return_url is the url of tool consumer to which result has to be
+    returned and urlParams contains launch url of exercise that tool consumer
+    will add in the Submission Tool URL. <br><br>
+
+    Once Submission Tool URL is added, instructor can publish the exercise to
+    make it available for students. <br><br>
+
+    This is how OpenDSA makes use of LTI, which allows its exercises to be
+    seamlessly added into courses in Learning Management Systems.
 
   </span>
 </div>

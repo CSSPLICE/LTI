@@ -77,7 +77,7 @@
     Once, key and a secret matches, it then within the same 'lti_authorize!'
     endpoint checks if the request is valid or not, or if the timestamp on
     request is too old. If so, then it returns an error otherwise, it return
-    true to launch endpoint which means the request is valid.<br><br>
+    true to launch endpoint, which means the request is valid.<br><br>
 
     <pre>
         if !params.has_key?(:selection_directive)
@@ -130,7 +130,7 @@
     </pre>
 
     Once it creates a new user, it then calls 'lti_enroll' with course offering
-    object which enrolls user into this course.<br><br>
+    object, which enrolls user into this course.<br><br>
     <pre>
       lti_enroll(@course_offering)
     </pre>
