@@ -39,7 +39,13 @@
       OpenDSA can be added as either graded or ungraded
       content.</strong> To insert as OpenDSA content in your course
       follow the steps mentioned
-      <%= link_to "here", lti_instructions_opendsa_path %>
+      <%= link_to "here", lti_instructions_opendsa_path %>.
+    </p>
+
+    <p>
+      OpenDSA is developed in Ruby on Rails. Follow <%= link_to "this
+      tutorial", lti_tutorials_rails_path %> to learn how LTI implemented in
+      Ruby on Rails.
     </p>
     <h3>LTI in OpenDSA</h3>
     <p>
@@ -215,12 +221,51 @@
 
     Once the request has been validated and a user has been enrolled, it uses
     RST parser, which parses the names of exercises in RST files and finds the
-    current exercise with its name.<br><br>
+    current exercise with its name. <br><br>
 
     <pre>
       require 'RST/rst_parser'
       @ex = RstParser.get_exercise_map()[params[:ex_short_name]]
     </pre>
+
+    Note that, OpenDSA modules are in ReStructuredText (RST) format and have
+    information about exercises within these modules. These RST files are
+    converted into html pages. Below is an example of
+    RST file which has information of two exercises, one is inlineav slideshow
+    and other is avembed. These are the two kinds of exercises in OpenDSA,
+    avembeds have their own html pages and inlineavs are generated through
+    JavaScript and CSS. <br><br>
+
+    <pre>
+
+    .. avmetadata::
+       :author: Nabanita Maji
+       :topic: NP-completeness
+
+    The Traveling Salesman Problem
+    ==============================
+
+    Traveling Salesman
+    ------------------
+
+    TRAVELING SALESMAN PROBLEM (TSP)
+
+    .. inlineav:: TSPCON ss
+       :long_name: Traveling Salesman
+       :links: AV/Development/NP/TSPCON.css
+       :scripts: AV/Development/NP/TSPCON.js
+       :output: show
+
+    Try out an instance of the Traveling Salesman problem on your own.
+
+    .. avembed:: Exercises/NP/TSPPRO.html ka
+       :long_name: Practice Exercise for Traveling Salesman Problem
+    </pre>
+
+    <p>In the code above, RST parser parses the information of exercise, in
+      case of RST file shown above, it will parse the 'long_name' field of two
+      exercises.
+    </p>
 
     After that, it finds the course offering exercise object with course
     offering id and resource_link_id object received in a request. A
@@ -275,7 +320,7 @@
   to Tool Consumer if the request was called as an assessment.
   <br><br>
   Within assessment endpoint, initially it checks if the exercise is from a
-  book instance or not. If exercise if from a book instance then the request
+  book instance or not. If exercise is from a book instance then the request
   will have 'instBookSectionExerciseId' parameter and it fetches number of
   attempts on this exercise and current progress of a student using the book
   instance exercise id and user id.<br><br>
@@ -353,7 +398,10 @@
 
     After that, it fetches the launch parameters from the request and finds the
     authentication credentials associated with the public consumer key so that
-    it can send the results back to tool consumer.<br><br>
+    it can send the results back to tool consumer. These launch parameters are 
+    same as the one received in the initial launch request. These parameters
+    are saved within a JavaScript variable and are passed to assessment
+    endpoint with the request. <br><br>
     <pre>
       launch_params = request_params['toParams']['launch_params']
       if launch_params
