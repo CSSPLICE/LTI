@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get 'lti/opendsa' => 'pages#OpenDSA-LTI'
   get 'lti/opendsa-bookinstance' => 'pages#OpenDSA-LTI-BookInstance'
   get 'lti/opendsa/instructor' => 'pages#OpenDSA-LTI-Instructor'
+  get 'lti/lti-advantage' => 'pages#LTI-Advantage'
   #get "pages/:page" => "pages#show"
   #get 'pages/examples' => 'pages#examples', as: "examples"
   # resources :pages do
