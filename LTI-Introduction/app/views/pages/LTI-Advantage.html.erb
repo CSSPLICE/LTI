@@ -12,7 +12,7 @@
       environments. The LTI specification enhances the functionality provided
       by a Tool Consumer and provides instructors with various applications
       that they can embed into their course. <%= link_to "Click here",
-      lti_path(anchor: 'buildtp') %> to read more about LTI.
+      lti_path %> to read more about LTI.
     </p>
     <h3>LTI Advantage</h3>
     <p>
@@ -51,13 +51,43 @@
       course. It automates course enrollment in tool providers and enables
       instructors to receive reporting on student activity within a learning
       tool, such as the list of users and their roles or a list of participants
-      who have not accessed the course yet.
+      who have not accessed the course yet. LTI does not pass user information
+      in its default configuration and Names and Role Provisioning Services
+      automates the provision of student lists to an external tool. Sending the
+      list of students enables external tool to pre-provision accounts for all
+      users rather than creating one when student launches for the first time.
     </p>
     <p>
-      In order for a tool to be able to use this service, the tool consumers
-      has to pass an endpoint as a custom parameter with the name of
-      <strong>custom_context_memberships_url</strong>. The tools will send the
-      list of enrollments back on this URL.
+      In order for a tool to be able to use this service, in LTI 1.x, the tool
+      consumers have to pass an endpoint as a custom parameter with the name of
+      <strong>custom_context_memberships_url</strong>. To implement Names and
+      Role Provisioning Services, a TP only needs to send a signed GET request
+      to this endpoint and in return TP will receive a membership list.
+    </p>
+
+    <p>
+      A Tool Provider can send one or more of the following query parameters in
+      a GET request:
+      <p>
+        <strong>role</strong> - The specific role for a membership. Following
+        are the roles available in Canvas.<br>
+        <div class="text-center">
+          <%= image_tag "lti_roles.png", style:'width:50%' %>
+        </div>
+      </p>
+      <p>
+        <strong>limit</strong> - Limit the maximum number of items per page.
+      </p>
+      <p>
+        <strong>rlid</strong> - Memberships having access of this resource link.
+      </p>
+      <p>
+        The following code fetches first 5 users with role
+        <em>urn:lti:role:ims/lis/Learner</em> who have access to a resource
+        link with ID rl999.
+        <pre>
+          <code>role=urn%3Alti%3Arole%3Aims%2Flis%2FLearner&limit=5&rlid=rl999</code></pre>
+      </p>
     </p>
     <h3>Deep Linking</h3>
     <p>
