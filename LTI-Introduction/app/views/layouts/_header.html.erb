@@ -21,19 +21,19 @@
                             <li class=" dropdown">
                                 <a href="#" class="dropdown-toggle "
                                 data-toggle="dropdown" role="button"
-                                aria-haspopup="true" aria-expanded="false">LTI <span class="caret"></span></a>
+                                aria-haspopup="true" aria-expanded="false">LTI
+                                <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li> <%= link_to "About",  lti_path %></li>
                                     <li> <%= link_to "Introduction",
                                     lti_path(anchor: 'Introduction') %></li>
                                     <li> <%= link_to "Building an LTI Tool
-                                    Provider",  lti_path(anchor: 'buildtp')
+                                    Provider",  lti_building_lti_tool_path
                                     %></li>
                                     <li> <%= link_to "LTI Advantage",
                                     lti_lti_advantage_path %></li>
                                     <li> <a
-                                      href="https://www.imsglobal.org/activity/l
-                                      earning-tools-interoperability"
+                                      href="https://www.imsglobal.org/activity/learning-tools-interoperability"
                                       target="_blank">IMS Global Home</a> </li>
                                 </ul>
                             </li>
@@ -45,13 +45,16 @@
                                 class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li> <%= link_to "Building an LTI Tool
-                                    Provider",  lti_path(anchor: 'buildtp') %></li>
+                                    Provider",  lti_building_lti_tool_path
+                                    %></li>
                                     <li> <%= link_to "Rails Tool Provider",
                                     lti_tutorials_rails_path %></li>
                                     <li> <%= link_to "Rails TP - Send
                                     Scores",   lti_tutorials_rails2_path %></li>
-                                    <li> <%= link_to "Generate SSL
-                                    Certificate",  lti_path(anchor: 'ssl') %> </li>
+                                    <li> <%= link_to "Generating an SSL
+                                    Certificate",
+                                    lti_building_lti_tool_path(anchor: 'ssl')
+                                    %> </li>
                                 </ul>
                             </li>
                             <li class=" dropdown">
@@ -61,15 +64,25 @@
                                 aria-expanded="false">OpenDSA <span
                                 class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li> <%= link_to "OpenDSA - an LTI Use Case",  lti_opendsa_path %></li>
-                                    <li> <%= link_to "OpenDSA - Instructions",
-                                    lti_instructions_opendsa_path %></li>
+                                    <li> <%= link_to "OpenDSA - an LTI Use
+                                    Case",  lti_opendsa_path %></li>
+                                    <li> <%= link_to "Adding OpenDSA content to
+                                    course", lti_instructions_opendsa_path
+                                    %></li>
                                 </ul>
                             </li>
-                            <li></li>
-                            <li><a
-                              href="http://www.imsglobal.org/activity/caliper"
-                              class="">Caliper</a></li>
+                            <li class=" dropdown">
+                                <a href="#" class="dropdown-toggle "
+                                data-toggle="dropdown" role="button"
+                                aria-haspopup="true"
+                                aria-expanded="false">Caliper <span
+                                class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li> <a
+                                      href="http://www.imsglobal.org/activity/caliper"
+                                      target="_blank">Caliper Homepage</a></li>
+                                </ul>
+                            </li>
                         </ul>
 
                     </div>
