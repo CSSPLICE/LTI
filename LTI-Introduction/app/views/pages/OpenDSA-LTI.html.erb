@@ -8,16 +8,22 @@
       OpenDSA is an eTextbook project developed at Virginia Tech. OpenDSA
       materials include many visualizations and interactive exercises that
       support courses in a wide variety of Computer Science-related topics such
-      as Data Structures and Algorithms (DSA), Formal Languages, Finite
-      Automata, and Programming Languages.
+      as Data Structures and Algorithms (DSA), Formal and Programming Languages.
     </p>
     <h3>OpenDSA Terminologies</h3>
     <p>
       <strong>Module:</strong> A single HTML page, corresponding to a single
       section in a textbook, or a single topic that might be part of a lecture.
+      OpenDSA currently has two hundred instructional modules, where each
+      module is the equivalent to one topic, such as a sorting algorithm. Note
+      that Canvas uses this term a bit differently, and an OpenDSA
+      <em>module</em> might appear as multiple Canvas modules.
+
       <br><br>
+
       <strong>Book Instance:</strong> Modules collected together form an
       OpenDSA Book Instance.<br><br>
+
       <strong>Course Offering</strong> Course offering is a way to uniquely
       identify a course. It is a combination of organization and course name.
       For example, Virginia Tech is an organization, CS 3114 is a course and
@@ -25,57 +31,60 @@
       Tech.
     </p>
     <p>
-      OpenDSA currently has two hundred instructional modules, where each
-      module is the equivalent to one topic, such as one sorting algorithm.
-      Every algorithm or data structure is illustrated by an interactive
-      algorithm visualization. Students could enter their own test cases to see
-      how the algorithm or data structure works on that input, and they can
-      control the pacing of the visualization. <a
-      href="https://opendsa-server.cs.vt.edu/home/about"> Click here</a> to
+      <a href="https://opendsa-server.cs.vt.edu/home/about"> Click here</a> to
       read more about OpenDSA.
     </p>
-    <h3>OpenDSA Instructions</h3>
+
     <p>
       OpenDSA can be added as either graded or ungraded
-      content.</strong> To insert as OpenDSA content in your course
-      follow the steps mentioned
-      <%= link_to "here", lti_instructions_opendsa_path %>.
+      content.</strong> To insert OpenDSA content into a Canvas course,
+      follow the steps <%= link_to "here", lti_instructions_opendsa_path %>.
     </p>
 
     <p>
       OpenDSA is developed in Ruby on Rails. Follow <%= link_to "this
-      tutorial", lti_tutorials_rails_path %> to learn how LTI implemented in
+      tutorial", lti_tutorials_rails_path %> to learn how LTI is implemented in
       Ruby on Rails.
     </p>
     <h3>LTI in OpenDSA</h3>
     <p>
-      OpenDSA implements LTI therefore, it can be easily integrated in Learning
-      Management Systems. OpenDSA exercise in Canvas looks like:
+      OpenDSA implements LTI, and therefore it can be easily integrated into
+      Learning Management Systems. A typical OpenDSA exercise in Canvas looks
+      like:
       <div class="text-center">
         <%= image_tag "OpenDSA/tree_exercise.png", style:'width:40%' %>
       </div>
-      This exercise shown above looks like a part of Canvas course, which is
-      accomplished through LTI. In Canvas, there are two ways to add OpenDSA
-      content, one is to add a standalone exercise using External Tools and the
-      second method is to go on OpenDSA website, create a book instance and it
-      automatically creates all the exercises as a modules in Canvas. But this
-      later feature is only available for Canvas because it uses Canvas API to
-      create modules in Canvas. Once OpenDSA content is added into the course
-      with either of the methods mentioned above, then it uses LTI to launch,
-      show and grade an exercise within tool consumer.
+      This exercise shown above looks like a part of a Canvas course, which is
+      accomplished through LTI. There are two ways to add OpenDSA content to
+      Canvas. One is to add a standalone exercise through Canvas' External
+      Tools and the second method is to go to the OpenDSA website and create a
+      book instance. This automatically creates the OpenDSA textbook as Modules
+      and Assignments in Canvas. But this feature is only available for Canvas,
+      because OpenDSA uses the Canvas API to provide the links from modules in
+      Canvas to the OpenDSA HTML pages. Once OpenDSA content is added into the
+      course with either of the methods mentioned above, then Canvas uses LTI
+      to launch, show, and grade an exercise in the normal way as a tool
+      consumer.
     </p>
     <p>
       To make use of LTI, OpenDSA implements LTI controller, which handles all
       the LTI requests. There are two types of LTI requests in OpenDSA, one is
-      for a student and other is for instructors. When an instructor adds an
-      OpenDSA content, he sees a list of exercises he can add to his course and
-      for that a <strong>resource</strong> endpoint is called.
-      <strong>Launch</strong> endpoint is called when a student
-      accesses OpenDSA exercise.
+      for a student and other is for instructors. When an instructor adds
+      OpenDSA content, he sees a list of exercises that he can add to his
+      course. A <strong>resource</strong> endpoint is called for instructors.
+      The <strong>Launch</strong> endpoint is called when a student
+      accesses an OpenDSA exercise embedded in a Canvas page.
     </p>
-    In start of LTI controller (apps/controllers/lti_controller.rb) it allows
-    launch and a resource endpoint to open in an iframe. This allows OpenDSA
-    exercises to embed in LMS.<br><br>
+    <p>
+      LTI controller <em>(apps/controllers/lti_controller.rb)</em> in OpenDSA
+      takes care of all the requests related to LTI. Therefore, these
+      <em>resource</em> and <em>launch</em> endpoints are implemented within
+      this LTI controller. Below we explain how LTI requests are handled in
+      OpenDSA within this controller.
+    </p>
+    Since we know that LMS expects Tool Provider to open in an iframe.
+    Therefore, in start of the LTI controller OpenDSA allows both
+    launch and resource endpoints to open in an iframe.<br><br>
     <pre>
       after_action :allow_iframe, only: [:launch, :resource]
     </pre>
