@@ -89,15 +89,14 @@
       after_action :allow_iframe, only: [:launch, :resource]
     </pre>
 
-    We will begin with explanation of launch endpoint here. Once OpenDSA
-    content is added into a course and a student clicks on an OpenDSA
-    exercise, it sends an LTI request to the launch endpoint.
-    Within the launch endpoint, it first validates if 'custom_inst_book_id' is
-    available or not. This is a custom parameter, and it checks if this
-    parameter is available then the custom book instance was created on OpenDSA
-    website and modules were created using Canvas API. If the book instance is
-    not present, it calls the endpoint 'launch_ex' which means that it is a
-    standalone exercise.<br><br>
+    We will begin with explanation of launch endpoint here. Click
+    <%= link_to "here", lti_opendsa_instructor_path %> to read how OpenDSA
+    handles LTI requests when instructors add exercises to their courses.
+    <br><br>
+
+    Once OpenDSA content is added into a course and a student clicks on an
+    OpenDSA exercise, Tool Consumer sends an LTI request to the launch endpoint
+    of OpenDSA. Within the launch endpoint, OpenDSA initially validates if 'custom_inst_book_id' is available or not. This is a custom parameter, which if available means that the OpenDSA book instance was created on OpenDSA's website and modules were created in Canvas using Canvas API. If the book instance is not present, it means that this is a standalone exercise and OpenDSA calls the endpoint 'launch_ex' to handle standalone exercise. <br><br>
     <pre>
       unless params.key?(:custom_inst_book_id)
         launch_ex
@@ -105,15 +104,19 @@
       end
     </pre>
 
-    Now first we will cover launch_ex endpoint <strong> which means a standalone
-    exercise is launched by the student.</strong> To add standalone graded
+    In this tutorial, we will first cover launch_ex endpoint <strong> that
+    handles standalone exercises</strong>. To add standalone graded
     exercises in your course follow the steps mentioned
-    <%= link_to "here", lti_instructions_opendsa_path %>.<br><br>
+    <%= link_to "here", lti_instructions_opendsa_path %>. Furthermore, to read
+    how OpenDSA handles LTI requests for a book instance exercise, click
+    <%= link_to "here", lti_opendsa_bookinstance_path %>. <br><br>
 
-    When a student clicks on an assignment, first steps that are performed are
-    that it first fetches credentials (unique secret) from public
-    authentication key received in a request and find course offering to which
-    assignment belongs.<br><br>
+    <h3>LTI in stand-alone exercise</h3><br><br>
+
+    When a student clicks on an assignment/exercise, first steps that are
+    performed are that OpenDSA fetches the credentials (the unique secret) from
+    the public authentication key received in the request and finds the course
+    offering to which assignment belongs.<br><br>
     <pre>
     def launch_ex
       require 'oauth/request_proxy/rack_request'
@@ -123,15 +126,15 @@
         course_offerings: {lms_course_num: params[:custom_canvas_course_id]}
       ).first
     </pre>
-    After that it calls 'lti_authorize!' endpoint to validate the request
-    received.<br><br>
+    After that OpenDSA calls the <em>'lti_authorize!'</em> method to validate
+    the request received.<br><br>
     <pre>
       render('error') and return unless lti_authorize!
     </pre>
 
-    Within lti_authorize endpoint, it creates a tool provider object from the
-    authentication object created above. If a key and secret does not match, it
-    throws an error and return.<br><br>
+    Within the lti_authorize endpoint, OpenDSA creates a tool provider object
+    from the authentication object created above and throws an error and return
+    in case the key and secret does not match.<br><br>
 
     <pre>
       def lti_authorize!
@@ -151,10 +154,11 @@
         end
     </pre>
 
-    Once, key and a secret matches, it then within the same 'lti_authorize!'
-    endpoint checks if the request is valid or not, or if the timestamp on
-    request is too old. If so, then it returns an error otherwise, it return
-    true to launch endpoint, which means the request is valid.<br><br>
+    If the key and secret match, then within the same 'lti_authorize!' endpoint
+    OpenDSA checks if the request is valid or not, or if the timestamp on the
+    request is too old. If so, then OpenDSA returns an error otherwise, returns
+    <em>'true'</em> to launch endpoint, which means the request is valid.
+    <br><br>
 
     <pre>
         if !params.has_key?(:selection_directive)
@@ -178,15 +182,16 @@
       end
     </pre>
 
-    Once the request has been validated, it returns to launch_ex endpoint and in
-    the next step it calls 'ensure_user'.<br><br>
+    Once the request has been validated, OpenDSA returns back to the
+    <em>"launch_ex"</em> endpoint and calls <em>"ensure_user"</em> method after
+    that.<br><br>
     <pre>
       ensure_user()
     </pre>
 
-    Within 'ensure_user' it first checks if a user with a same email exists and
-    creates a new user it that email is not found and finally signs in that
-    user to start his session.<br><br>
+    Within 'ensure_user' method, OpenDSA checks if a user with the same email
+    exists or not and creates a new user if that email is not found and
+    finally, signs in that user to start his session.<br><br>
     <pre>
       def ensure_user
         email = params[:lis_person_contact_email_primary]
@@ -205,15 +210,17 @@
       end
     </pre>
 
-    Once it creates a new user, it then calls 'lti_enroll' with course offering
-    object, which enrolls user into this course.<br><br>
+    After a new user has been created, OpenDSA calls <em>"lti_enroll"</em>
+    method with course offering object, which enrolls user into this particular
+    course.<br><br>
     <pre>
       lti_enroll(@course_offering)
     </pre>
 
-    Within 'lti_enroll', it first checks if the course offering exists and it
-    allows users to enroll or not and finally it enrolls the user if he has not
-    already enrolled into this specific course offering.<br><br>
+    Within the <em>"lti_enroll"</em> method, OpenDSA checks if the course
+    offering exists and allows users to enroll or not. After that, OpenDSA
+    enrolls the user if he has not already enrolled into this specific course
+    offering.<br><br>
     <pre>
       def lti_enroll(course_offering, role = CourseRole.student)
         if course_offering &&
