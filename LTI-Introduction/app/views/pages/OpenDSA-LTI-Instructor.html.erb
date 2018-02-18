@@ -20,9 +20,9 @@
     </pre>
 
     When an instructor adds the OpenDSA content, he sees a list of exercises
-    that he can add as shown in the image below. All of this process, starting
-    from showing the list of exercises to returning the link of selected
-    exercise back to the tool consumer is accomplished by OpenDSA within the
+    that he can add as shown in the image below. OpenDSA accomplishes all of
+    this process, starting from showing the list of exercises to returning the
+    link of selected exercise back to the tool consumer within the
     <em>resource</em> endpoint.
     <div class="text-center">
       <%= image_tag "OpenDSA/exercises.png", style:'width:40%' %>
@@ -60,7 +60,7 @@
     Once the LMS instance is fetched, OpenDSA fetches the course offering using
     LMS instance id and course number received in the request (in
     custom_canvas_course_id parameter). In OpenDSA, a course offering is a
-    unique way to indentify a course. <br><br>
+    unique way to identify a course. <br><br>
     <pre>
     @lms_course_num = params[:custom_canvas_course_id]
     @lms_course_code = params[:context_label]
