@@ -66,6 +66,16 @@
                                 <ul class="dropdown-menu">
                                     <li> <%= link_to "OpenDSA - an LTI Use
                                     Case",  lti_opendsa_path %></li>
+                                    <li> <%= link_to "LTI in OpenDSA -
+                                    Stand-alone Exercises",
+                                    lti_opendsa_path(anchor: 'stand-alone') 
+                                    %></li>
+                                    <li> <%= link_to "LTI in OpenDSA -
+                                    Book Instance Exercises",
+                                    lti_opendsa_bookinstance_path %></li>
+                                    <li> <%= link_to "LTI in OpenDSA -
+                                    Instructors",  lti_opendsa_instructor_path
+                                    %></li>
                                     <li> <%= link_to "Adding OpenDSA content in
                                     LMS", lti_instructions_opendsa_path
                                     %></li>

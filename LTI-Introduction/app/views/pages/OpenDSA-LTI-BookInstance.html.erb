@@ -1,29 +1,30 @@
 <div class="row" style="margin:50px">
   <span class="span12">
     <div class="text-center">
-      <h1>OpenDSA - an LTI Use Case</h1>
+      <h1>LTI in OpenDSA - Book Instance Exercises</h1>
     </div>
     <br>
     <p>
-      Previously we have shown <%= link_to "here", lti_opendsa_path %> how
+      Previously, we have shown <%= link_to "here", lti_opendsa_path %> that how
       OpenDSA implements LTI when a student tries to access a standalone
-      exercise from a tool consumer. Here we explain further the launch
-      endpoint that how OpenDSA makes use of LTI when a student accesses an
-      exercise from an OpenDSA book instance (generated through OpenDSA
-      website). Note that a <strong>Launch</strong> endpoint is called when a
-      student accesses OpenDSA exercise and a <strong>resource</strong>
-      endpoint is called when an instructor adds an OpenDSA content and he sees
-      a list of exercises he can add to his course.
+      exercise from a tool consumer. In this tutorial we explain further the
+      <strong>launch</strong> endpoint that how OpenDSA makes use of LTI when a
+      student accesses an exercise from an OpenDSA book instance (generated
+      through OpenDSA website). Note that a <strong>Launch</strong> endpoint is
+      called when a student accesses OpenDSA exercise and a
+      <strong>resource</strong> endpoint is called when an instructor adds any
+      OpenDSA content and he sees a list of exercises he can add to his course.
     </p>
 
-    Once OpenDSA content is added into a course and a student clicks on an
-    OpenDSA exercise, it sends an LTI request to the launch endpoint.
-    Within the launch endpoint, it first validates if 'custom_inst_book_id' is
-    available or not. This is a custom parameter, and it checks if this
-    parameter is available then the custom book instance was created on OpenDSA
-    website and modules were created using Canvas API. If the book instance is
-    not present, it calls the endpoint 'launch_ex' which means that it is a
-    standalone exercise.<br><br>
+    Once the OpenDSA content is added into a course and a student clicks on an
+    OpenDSA exercise, Tool Consumer sends an LTI request to the launch endpoint
+    of OpenDSA. Within the launch endpoint, OpenDSA initially validates if
+    "custom_inst_book_id" is available or not. This is a custom parameter,
+    which if available means that the OpenDSA book instance was created on
+    OpenDSA's website and modules were created in Canvas using Canvas API and
+    this exercise belongs to an OpenDSA book instance. If the book instance is
+    not present, it means that this is a standalone exercise and OpenDSA calls
+    the "launch_ex" endpoint to handle the standalone exercises. <br><br>
     <pre>
       unless params.key?(:custom_inst_book_id)
         launch_ex
@@ -31,10 +32,11 @@
       end
     </pre>
 
-    After that within the launch endpoint, it finds the book instance from
-    custom book instance id received in the request and from the book instance,
-    it fetches a course offering this book instance belongs to. In OpenDSA, a
-    course offering is a way to uniquely identify a course.<br><br>
+    If the exercise is from a book instance then within the launch endpoint,
+    OpenDSA finds the book instance from the custom book instance id received
+    in the request and fetches the course offering this book instance belongs
+    to. In OpenDSA, a course offering is a way to uniquely identify a
+    course.<br><br>
     <pre>
       # must include the oauth proxy object
       require 'oauth/request_proxy/rack_request'
@@ -42,19 +44,20 @@
       @course_offering = CourseOffering.find_by(id:
       @inst_book.course_offering_id)
     </pre>
-    Once, a book instance and course offering is fetched, it validates if it is
-    an authentic LTI request or not. To do so, it first fetches credentials
-    (unique secret) from public authentication key received in
-    a request and calls 'lti_authorize!' endpoint.<br><br>
+    Once, the book instance and course offering is fetched, OpenDSA validates
+    if the received request is an authentic LTI request or not. To do so,
+    OpenDSA first fetches the credentials (unique secret) from the public
+    authentication key received in the request and calls the
+    <em>"lti_authorize!"</em> method.<br><br>
 
     <pre>
       $oauth_creds = LmsAccess.get_oauth_creds(params[:oauth_consumer_key])
       render('error') and return unless lti_authorize!
     </pre>
 
-    Within lti_authorize endpoint, it creates a tool provider object from the
-    authentication object created above. If a key and secret does not match, it
-    throws an error and return.<br><br>
+    Within the <em>lti_authorize!</em> endpoint, OpenDSA creates a tool
+    provider object from the authentication object created above and throws an
+    error and returns in case the key and secret do not match.<br><br>
 
     <pre>
       def lti_authorize!
@@ -74,10 +77,12 @@
         end
     </pre>
 
-    Once, key and a secret matches, it then within the same 'lti_authorize!'
-    endpoint checks if the request is valid or not, or if the timestamp on
-    request is too old. If so, then it returns an error otherwise, it return
-    true to launch endpoint, which means the request is valid.<br><br>
+    If the key and secret match, then within the same 'lti_authorize!' endpoint
+    OpenDSA checks if the request is valid or not, or if the timestamp on the
+    request is too old. If so, then OpenDSA returns an error otherwise, returns
+    "<em>true</em>" to the <em>launch</em> endpoint, which means the request
+    is valid.
+    <br><br>
 
     <pre>
         if !params.has_key?(:selection_directive)
@@ -101,16 +106,17 @@
       end
     </pre>
 
-    Once the request has been validated, it returns to launch endpoint and in
-    the next step it calls 'ensure_user'.<br><br>
+    Once the request has been validated, OpenDSA returns back to the
+    <em>"launch"</em> endpoint and calls <em>"ensure_user"</em> method after
+    that.<br><br>
 
     <pre>
       ensure_user()
     </pre>
 
-    Within 'ensure_user' it first checks if a user with a same email exists and
-    creates a new user it that email is not found and finally signs in that
-    user to start his session.<br><br>
+    Within <em>"ensure_user"</em> method, OpenDSA checks if a user with the
+    same email exists or not and creates a new user if that email is not found
+    and finally, signs in that user to start his session.<br><br>
     <pre>
       def ensure_user
         email = params[:lis_person_contact_email_primary]
@@ -129,15 +135,17 @@
       end
     </pre>
 
-    Once it creates a new user, it then calls 'lti_enroll' with course offering
-    object, which enrolls user into this course.<br><br>
+    After a new user has been created, OpenDSA calls <em>"lti_enroll"</em>
+    method with the course offering object, which enrolls user into this
+    particular course.<br><br>
     <pre>
       lti_enroll(@course_offering)
     </pre>
 
-    Within 'lti_enroll', it first checks if the course offering exists and it
-    allows users to enroll or not and finally it enrolls the user if he has not
-    already enrolled into this specific course offering.<br><br>
+    Within the <em>"lti_enroll"</em> method, OpenDSA checks if the course
+    offering exists and allows users to enroll or not. After that, OpenDSA
+    enrolls the user if he has not already enrolled into this specific course
+    offering.<br><br>
     <pre>
       def lti_enroll(course_offering, role = CourseRole.student)
         if course_offering &&
@@ -152,8 +160,9 @@
       end
     </pre>
 
-    Once the request has been validated and a user has been enrolled, it shows
-    an exercise to a student.<br><br>
+    Once the request has been validated and a user has been enrolled, OpenDSA
+    reads the html content of the exercise, which is shown to the user in an
+    iframe within the tool consumer.<br><br>
     <pre>
       @section_html = File.read(File.join('public/OpenDSA/Books',
                                 params[:custom_book_path],
@@ -163,15 +172,16 @@
     end
   </pre>
 
-  Once, student finishes an exercise, it sends a request to
-  <strong>assessment</strong> endpoint from JavaScript which sends score back
-  to Tool Consumer if the request was called as an assessment.
+  When a student completes an exercise, OpenDSA sends a new request to
+  <strong>assessment</strong> endpoint from JavaScript. The <em>assessment</em>
+  method sends score back to Tool Consumer if this exercise was launched as an
+  assessment.
   <br><br>
-  Within assessment endpoint, initially it checks if the exercise is from a
-  book instance or not. If exercise if from a book instance then the request
-  will have 'instBookSectionExerciseId' parameter and it fetches number of
-  attempts on this exercise and current progress of a student using the book
-  instance exercise id and user id.<br><br>
+  Within the <em>assessment</em> endpoint, initially OpenDSA checks if the
+  exercise is from a book instance or not. If the exercise is from a book
+  instance then the request will have <em>"instBookSectionExerciseId"</em>
+  parameter. OpenDSA fetches the number of attempts on this exercise and
+  current progress of a student using the book instance exercise id and user id.
   <pre>
 
   def assessment
@@ -198,11 +208,12 @@
                                   total_correct, proficient_date,first_done,
                                   last_done")
     </pre>
-    If exercise is not from a book instance then the request will have
-    'instCourseOfferingExerciseId' parameter, which means that individual
-    exercise is directly added to the course. Here it fetches number of
-    attempts on this exercise and current progress of a student using the
-    course offering exercise id and user id.<br><br>
+    If the exercise is not from a book instance then in that case the request
+    will have <em>"instCourseOfferingExerciseId"</em> parameter, which means
+    that standalone exercise is directly added to the course. For the standalone
+    exercises, OpenDSA fetches the number of attempts on this exercise and
+    current progress of the student using the course offering exercise id and
+    user id.<br><br>
     <pre>
     else
       @odsa_exercise_attempts =
@@ -225,9 +236,10 @@
     end
     </pre>
 
-    Once progress and attempts have been fetched, it sends this back in tabular
-    form to Tool Consumer along with the results of exercises and students can
-    view these stats.<br><br>
+    Once the progress and the number of attempts have been fetched, OpenDSA
+    sends these statistics back in tabular form to the Tool Consumer along with
+    the results of the exercise and students can view these stats in Tool
+    Consumer.<br><br>
     <pre>
     a = @odsa_exercise_attempts
     b = @odsa_exercise_progress
@@ -243,9 +255,12 @@
       </div>
     </p>
 
-    After that, it fetches the launch parameters from the request and finds the
-    authentication credentials associated with the public consumer key so that
-    it can send the results back to tool consumer.<br><br>
+    When the above stats and results have been gathered, OpenDSA fetches the
+    launch parameters from the request and finds the authentication credentials
+    associated with the public consumer key inorder to send the results back to
+    tool consumer. These launch parameters are same as the one received in the
+    initial launch request. These parameters are saved within a JavaScript
+    variable and are passed to assessment endpoint with the request. <br><br>
     <pre>
       launch_params = request_params['toParams']['launch_params']
       if launch_params
@@ -257,10 +272,10 @@
       end
     </pre>
 
-    Once the credentials have been fetched, it submits the score back to tool
-    consumer. It creates a tool provider object using the
-    key and a secret and after that it extends the tool provider object with
-    the OutcomeData extension provided by the IMS-LTI gem.<br><br>
+    Once the credentials have been fetched, OpenDSA submits the score back to
+    tool consumer. To do so, OpenDSA creates a tool provider object using the
+    key and a secret and after that OpenDSA extends the tool provider object
+    with the OutcomeData extension provided by the IMS-LTI gem.<br><br>
     <pre>
       lti_param = {
         "lis_outcome_service_url" =>
@@ -271,8 +286,10 @@
 
       @tp.extend IMS::LTI::Extensions::OutcomeData::ToolProvider
     </pre>
-    After that it checks whether the tool was launched as an
-    outcome service or not.<br><br>
+    After that OpenDSA checks whether the tool was launched as an
+    outcome service or not. If the tool was not launched as an outcome service
+    means that the results cannot be reported back to the Tool Consumer.
+    <br><br>
     <pre>
       if !@tp.outcome_service?
         @message = "This tool wasn't lunched as an outcome service"
@@ -285,23 +302,24 @@
       #res = @tp.post_replace_result!(score)
       res = @tp.post_extended_replace_result!(score: score, text: f)
     </pre>
-    This means that if the tool was launched as an assignment,
-    then OpenDSA has to send the final result of an assessment back to the tool
-    consumer.
-    Therefore, in its request it
+    If the tool was launched as an assignment, then OpenDSA has to send the
+    final results of every assessment back to the tool consumer.
+    Therefore, in the request Tool Consumer
     sends <strong><em>lis_outcome_service_url</em></strong>
-    and <strong><em>lis_result_sourcedid</em></strong>.
+    and <strong><em>lis_result_sourcedid</em></strong> parameters.
     The fist parameter is a URL used to send the score back, and
     the second parameter identifies a unique row and column within
     the Tool Consumer's gradebook.
-    If these two parameters are not present, then it throws as error and
-    otherwise it posts the result back to the tool consumer.
-    The IMS-LTI gem enables to accomplish all
-    of this using 'post_extended_replace_result'.
+    If these two parameters are not present, then OpenDSA throws an error and
+    otherwise sends the result back to the tool consumer.
+    The IMS-LTI gem enables to accomplish all of this using
+    <em>"post_extended_replace_result"</em> method.
+
     <br><br>
-    Once the result has been posted and if the exercise was launched from a
-    book instance it saves that the result has been posted for this exercise
-    along with current time.<br><br>
+
+    Once the results have been posted and if the exercise was launched from a
+    book instance, OpenDSA saves in the database that the result has been
+    posted for this exercise along with current time.<br><br>
     <pre>
       if res.success?
         if hasBook
@@ -311,8 +329,9 @@
         end
         render :json => { :message => 'success', :res => res.to_json }.to_json
     </pre>
-    If there is some error in posting result, it saves in the database that the
-    result posting failed for this instance and throws an error.<br><br>
+    If there is some error in posting the results, OpenDSA saves in the database
+    that the result posting failed for this instance and throws an
+    error back to Tool Consumer.<br><br>
     <pre>
       else
         if hasBook
