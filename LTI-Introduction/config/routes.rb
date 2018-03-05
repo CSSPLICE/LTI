@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'lti/opendsa/instructor' => 'pages#OpenDSA-LTI-Instructor'
   get 'lti/lti-advantage' => 'pages#LTI-Advantage'
   get 'lti/building-lti-tool' => 'pages#Building-LTI-Tool'
+  get 'lti/instructions/opendsa/moodle' => 'pages#OpenDSA-Moodle'
   #get "pages/:page" => "pages#show"
   #get 'pages/examples' => 'pages#examples', as: "examples"
   # resources :pages do
