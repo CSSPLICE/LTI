@@ -1,7 +1,7 @@
 <div class="row" style="margin:50px">
   <span class="span12">
     <div class="text-center">
-      <h1>Add OpenDSA to Moodle Course</h1>
+      <h1>Add an OpenDSA Exercise or Visualization to Moodle Course</h1>
     </div>
     <br>
     <p>
@@ -13,21 +13,28 @@
     <p>
       OpenDSA currently has two hundred instructional modules, where each
       module is the equivalent to one topic, such as one sorting algorithm.
-      Every algorithm or data structure is illustrated by an interactive
-      algorithm visualization. Students could enter their own test cases to see
+      Most algorithms and data structure are illustrated by interactive
+      algorithm visualizations. Students could enter their own test cases to see
       how the algorithm or data structure works on that input, and they can
-      control the pacing of the visualization. Go to
-      <a href="https://opendsa-server.cs.vt.edu/home/about" target="_blank">
-        OpenDSA website</a> to read more about OpenDSA.
+      control the pacing of the visualization. Go to the
+      <a href="https://opendsa.org" target="_blank"> OpenDSA website</a> to
+      read more about OpenDSA.
+    </p>
+    <p>
+      A course instructor who is using the Canvas LMS can add OpenDSA materials
+      directly into their Canvas courses. Below are detailed instructions for
+      how to add individual OpenDSA exercises or visualization to your Canvas
+      course. Gradable exercises will report scores to your Canvas gradebook.
     </p>
 
     <p>
-      To add OpenDSA in your course, you can follow the following steps:
+      To add one or more OpenDSA exercises in your Canvas course, follow the
+      following steps:
     </p>
     <p>
       <strong>Step 1:</strong> Go to
       <a href="http://opendsa.org" target="_blank"> OpenDSA.org </a>
-      and signup.
+      and create an account.
     </p>
     <p>
       <strong>Step 2:</strong> Send an email to
@@ -36,18 +43,17 @@
     </p>
     <p>
       <strong>Step 3:</strong> Once you are provided with the instructor
-      access, you need to click on your email on top right corner and you will
-      be redirected to a page from where you can copy your consumer key and a
-      shared secret as shown in the image below:
+      access, you need to click on your email address at the top right corner
+      of the page and you will be redirected to a page from where you can copy
+      your consumer key and a shared secret as shown in the image below:
       <div class="text-center">
         <%= image_tag "OpenDSA/keysecret.png", style:'width:50%' %>
       </div>
     </p>
     <p>
       <strong>Step 4:</strong>
-      Now, to add OpenDSA stand-alone exercises to your course, navigate to
-      your course in Moodle and click the <em>"Add an activity or
-      resource"</em>.
+      Next, navigate to your course in Moodle and click on <em>"Add an
+      activity or resource"</em>.
       <div class="text-center">
         <%= image_tag "OpenDSA/Moodle1.png", style:'width:40%' %>
       </div>
@@ -61,19 +67,19 @@
     </p>
     <p>
       <strong>Step 6:</strong>
-      Click on <em>"+"</em> icon on the right of <em>Preconfigured tool</em> to
-      add a new Tool Provider.
+      Click on the <em>"+"</em> icon on the right of <em>Preconfigured
+        tool</em> to add a new Tool Provider.
       <div class="text-center">
         <%= image_tag "OpenDSA/Moodle3.png", style:'width:40%' %>
       </div>
     </p>
     <p>
       <strong>Step 7:</strong>
-      Paste your consumer key and the shared secret that you received in the
+      Paste your consumer key and the shared secret that you copied in the
       <em>Step 3</em>. Add
       <a href="#">
-        https://opendsa-server.cs.vt.edu/lti/resource</a> URL under
-        <em>"Tool URL"</em>. This is a URL where OpenDSA will send an LTI
+        https://opendsa-server.cs.vt.edu/lti/resource</a> under
+        <em>"Tool URL"</em>. This is the URL to which OpenDSA will send an LTI
         request.
       <div class="text-center">
         <%= image_tag "OpenDSA/Moodle4.png", style:'width:40%' %>
@@ -95,8 +101,8 @@
       </div>
     </p>
     <p>
-      <strong>Step 10:</strong> Once all the above configurations are
-      completed, click "Save Changes" to add OpenDSA as a Tool Provider.
+      <strong>Step 10:</strong> Once the above steps are completed, click "Save
+      Changes" to add OpenDSA as a Tool Provider.
     </p>
     <p>
       <strong>Step 11:</strong> Now you should be back on a previous page.
@@ -118,8 +124,8 @@
     </p>
     <p>
       <strong>Step 13:</strong>
-      Once you do that, a tree view will be displayed listing the categories
-      of visualizations and exercises that are available. To expand one of the
+      Once you do that, a tree view will be displayed listing the topics
+      for visualizations and exercises that are available. To expand one of the
       categories, either double click on it, or click the arrow to the left of
       the folder icon. You will then see sub-categories that you can expand.
       Expanding a sub-category will display the names of the exercises and
