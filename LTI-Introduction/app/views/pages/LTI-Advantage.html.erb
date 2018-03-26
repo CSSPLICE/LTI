@@ -1,7 +1,7 @@
 <div class="row" style="margin:50px">
   <span class="span12">
     <div class="text-center">
-      <h1>Learning Tools Interoperability</h1>
+      <h1>Learning Tools Advantage</h1>
     </div><br>
     <p>
       Learning Tools Interoperability is a specification
@@ -14,55 +14,56 @@
       that they can embed into their course. <%= link_to "Click here",
       lti_path %> to read more about LTI.
     </p>
-    <h3>LTI Advantage</h3>
     <p>
-      LTI Advantage is next step towards interoperability and is a package of
-      extensions that enable deeper integration of tools with LMS. These
+      LTI Advantage is the next step towards interoperability. It is a package
+      of extensions that enable deeper integration of tools with an LMS. These
       extensions are built on the core LTI standard (v1.1 or higher).
-      Currently, there are following three LTI Advantage extensions:
+      These are the three current LTI Advantage extensions:
     </p>
     <p>
       <strong>Names and Role Provisioning Services:</strong> This extension
-      enables LMS to send list of course participants and faculty defined
-      groups to learning tools. It also allows to learn who has not yet
-      accessed a tool. It is a new name of Membership Service.
+      enables an LMS to send list of course participants and faculty defined
+      groups to learning tools. It also allows the LMS to learn who has not yet
+      accessed a tool. This generally used to be called Membership Service.
     </p>
     <p>
       <strong>Deep Linking:</strong> Provides a more intuitive way to add
       content from a tool provider by providing support for various types of
-      content items such as a playlists, hyperlink, iframe or a file. It is the
+      content items such as a playlists, hyperlinks, iframes or files. It is the
       new name for Content Item Message.
     </p>
     <p>
       <strong>Assignment and Grade Services:</strong> Enables tools to pass
-      results of assignment back to the LMS. Along with the scores, it also
-      supports comments to be returned to LMS if provided. It enables
-      instructors to maintain grades and comments in one a single place (LMS
-      grade book). It is the new name for Gradebook Service.
+      the results of assignment back to the LMS. Along with the scores, it also
+      supports comments to be returned to the LMS if provided. It enables
+      instructors to maintain grades and comments in a single place (such as
+      the LMS grade book). It is the new name for Gradebook Service.
     </p>
     <br>
-    Following is a detailed explanation of each of these extensions with
-    examples taken from IMS website.
+    Following is a detailed explanation of these extensions with
+    examples taken from the IMS website.
     <br>
     <h3>Names and Role Provisioning Services</h3>
     <p>
       The Names and Role Provisioning Services provides access to data about
-      users' roles within a course for example a list of enrollments in a
+      users' roles within a course, such as list of enrollments in a
       course. It automates course enrollment in tool providers and enables
       instructors to receive reporting on student activity within a learning
-      tool, such as the list of users and their roles or a list of participants
-      who have not accessed the course yet. LTI does not pass user information
-      in its default configuration and Names and Role Provisioning Services
-      automates the provision of student lists to an external tool. Sending the
-      list of students enables external tool to pre-provision accounts for all
-      users rather than creating one when student launches for the first time.
+      tool, such as the list of users and their roles or a list of those
+      participants who have not accessed the course yet. LTI does not pass user
+      information in its default configuration. The Names and Role Provisioning
+      Services automates the provision of student lists to an external tool.
+      Sending the list of students enables the external tool to pre-provision
+      accounts for all users, rather than creating one when the student
+      launches it for the first time.
     </p>
     <p>
       In order for a tool to be able to use this service, in LTI 1.x, the tool
       consumers have to pass an endpoint as a custom parameter with the name of
       <strong>custom_context_memberships_url</strong>. To implement Names and
-      Role Provisioning Services, a TP only needs to send a signed GET request
-      to this endpoint and in return TP will receive a membership list.
+      Role Provisioning Services, a Tool Provider only needs to send a signed
+      GET request to this endpoint and in return the Tool Provider will receive
+      a membership list.
     </p>
 
     <p>
@@ -79,10 +80,10 @@
         <strong>limit</strong> - Limit the maximum number of items per page.
       </p>
       <p>
-        <strong>rlid</strong> - Memberships having access of this resource link.
+        <strong>rlid</strong> - Memberships having access to this resource link.
       </p>
       <p>
-        The following code fetches first 5 users with role
+        The following code fetches first five users with role
         <em>urn:lti:role:ims/lis/Learner</em> who have access to a resource
         link with ID rl999.
         <pre>
@@ -91,17 +92,18 @@
     </p>
     <h3>Deep Linking</h3>
     <p>
-      The deep linking provides a more intuitive way to add various types of
+      Deep Linking provides a more intuitive way to add various types of
       content items from a Tool Provider (TP) into the tool consumer. This
       extension supports different types of content items such as a hyperlink,
       an embedded image or other media type, embedded HTML, iframe and a file.
-      A typical use case as mentioned on IMS website would be: "to allow a user
+      A typical use case as mentioned by IMS would be: "to allow a user
       within a Tool Consumer (TC) to click a button on the toolbar of a text
-      box editor, which opens a TP within an iframe (or pop-up window), use the
-      interface provided to select one or more items, and have the selected
-      item(s) returned to the TC and inserted into the text box.  This may be
-      an instructor adding content to a content page, or could be a student
-      selecting an attachment to submit as part of an assignment".
+      box editor, which opens a Tool Provider within an iframe (or pop-up
+      window), use the interface provided to select one or more items, and have
+      the selected item(s) returned to the Tool Consumer and inserted into the
+      text box. This may be an instructor adding content to a content page, or
+      could be a student selecting an attachment to submit as part of an
+      assignment".
     </p>
     <p>
       The first step in deep linking message is that a POST request is
@@ -110,14 +112,15 @@
       <em>ContentItemSelectionRequest</em>. The next step is for a Tool
       Provider is to verify if it is a valid LTI request and after that provide
       an interface for selecting content items. Once user select content items,
-      TP should return the details of selected items in a JSON array back to
-      the TC at URL received in <em>content_item_return_url</em> parameter.
-      Remember that, TP should always return user to TC even if they do not
-      select any items.
+      Tool Provider should return the details of selected items in a JSON array
+      back to the Tool Consumer at URL received in
+      <em>content_item_return_url</em> parameter. Remember that, Tool Provider
+      should always return user to the Tool Consumer even if they do not select
+      any items.
     </p>
     <p>
-      When Tool Consumer sends a POST request to Tool Provider, it may send the
-      following parameters:
+      When a Tool Consumer sends a POST request to a Tool Provider, it may send
+      the following parameters:
     </p>
     <strong>lti_message_type=</strong> ContentItemSelectionRequest (Required)
     <p>
@@ -151,14 +154,14 @@
     <strong>content_item_return_url=</strong> [URL] (Required) <br>
     <p>
       This field contains a URL where Tool Provider redirects the user back to
-      Tool Consumer.
+      the Tool Consumer.
     </p>
 
     <strong>accept_unsigned=</strong> false | true (Optional)
     <br>
     <p>
-      This field indicates whether the Tool Consumer accepts an unsigned return
-      message or not.
+      This field indicates whether the the Tool Consumer accepts an unsigned
+      return message or not.
     </p>
 
     <strong>accept_multiple=</strong> false | true (Optional)
@@ -172,7 +175,7 @@
     <p>
       This field indicates if the Tool Consumer will make a local copy of a
       content item. Tool Providers can send <em>expiresAt</em> parameter to let
-      TC know that the item will expire on that date.
+      the Tool Consumer know that the item will expire on that date.
     </p>
 
     <strong>accept_unsigned=</strong> false | true (Optional)
@@ -183,17 +186,17 @@
     </p>
 
     <p>
-      Along with the fields mentioned above, TC can also send additional fields
-      like text, title, data, auto_create (to indicate if content items
-      returned by the TP would be automatically persisted) and other parameters
-      about Tool Consumer and user.
+      Along with the fields mentioned above, the Tool Consumer can also send
+      additional fields like text, title, data, auto_create (to indicate if
+      content items returned by the Tool Provider would be automatically
+      persisted) and other parameters about the Tool Consumer and the user.
     </p>
     <br>
 
     <p>
       Once content item(s) has been selected, Tool Provider should redirect
-      user to Tool Consumer by sending POST request. It may send the following
-      parameters in the request:
+      the user to the Tool Consumer by sending POST request. It may send the
+      following parameters in the request:
     </p>
 
     <strong>lti_message_type=</strong> ContentItemSelection (Required)
@@ -277,8 +280,8 @@
     <strong>data=</strong> [Same as received] (Optional)
     <br>
     <p>
-      If Tool Consumer sent this parameter in original request, then Tool
-      Provider should return it as is to TC.
+      If the Tool Consumer sent this parameter in original request, then the
+      Tool Provider should return it as is back to the Tool Consumer.
     </p>
 
     <strong>lti_msg=</strong> [Message to be displayed] (Optional)
@@ -288,11 +291,12 @@
     </p>
 
     <p>
-      Along with the above parameter, TP can return additional parameters such
-      as <em>lti_log</em> to give TC a message to log when it return normally,
-      <em>lti_errorlog</em> to give TC a plain text error message to log when
-      TP encounters an error and <em>lti_errormsg</em> to provide details about
-      error to display to user.
+      Along with the above parameter, the Tool Provider can return additional
+      parameters such as <em>lti_log</em> to give the Tool Consumer a message
+      to log when it returns normally, <em>lti_errorlog</em> to give Tool
+      Consumer a plain text error message to log when the Tool Provider
+      encounters an error, and <em>lti_errormsg</em> to provide details about
+      error to display to the user.
     </p>
   </span>
 
