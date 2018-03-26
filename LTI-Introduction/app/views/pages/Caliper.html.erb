@@ -1,0 +1,394 @@
+<div class="row" style="margin:50px">
+  <span class="span12">
+    <div class="text-center">
+      <h1>Caliper</h1>
+    </div><br>
+    <h3>Introduction</h3>
+    <p>
+      Learning data is generated when students interact with different learning
+      tools. This data can be combined with student record and other data
+      points to support student success research. This data can be used by
+      faculty for proactive intervention with a student or this can be used
+      to infer how people learn and thus can help in further improving the
+      learning process. The instructors can also see which behaviors and
+      content produce the desired learning outcomes.
+
+    </p>
+    <h3>What It Is</h3>
+    <p>
+      <a href="http://www.imsglobal.org/activity/caliper">
+      Caliper<a> is a specification
+      developed by <a href="https://www.imsglobal.org/">IMS Global Learning
+        Consortium</a>.
+      The purpose of Caliper is to define a standard to measure and share
+      learning data. Most of the learning applications work in silos and
+      separate data has been captured by each learning application. The problem
+      that these separate data sources create is that each organization need to
+      reinvent the analytics wheel and more often than not these separate data
+      sources cannot be merged and therefore, none of the parties have a
+      complete picture. Therefore, a standard way of capturing and sharing
+      learning data enables more efficient development of learning analytics
+      features in learning environments and Caliper does that. Caliper defines
+      a common language for labeling learning data and provides a standard way
+      of measuring learning activities.
+    </p>
+    <p>
+      Following are few of the key terminologies from IMS website:
+      <ul>
+        <li>
+          Metric Profile: This is a information model for Caliper and is
+          organized by learning activity type. For example: Session Metric
+          Profile and a Reading Metric Profile. A Metric Profile includes
+          Entity, Actions and Events.
+        </li>
+        <li>
+          Actor: A Caliper Event includes an actor attribute for representing
+          the Agent. An actor is an Agent capable of initiating or performing
+          an action. For example: a student can be an actor.
+        </li>
+        <li>
+          Action: These are the actions performed as part of a Learning
+          Interaction. A Caliper Event includes an action attribute for
+          expressing the associated action. <em>LoggedIn</em> is an example of
+          action performed in a Session Metric Profile.
+        </li>
+
+        <li>
+          Entity: an object that participates in learning-related activity such
+          as Person, Assessment, Video, etc.
+        </li>
+        <li>
+          Event: Captures the Entities and Actions performed as a "learning
+          event".
+        </li>
+        <li>
+          Sensor: Software assets deployed within a learning application that
+          implement the Sensor API for transmitting Caliper data to a target
+          endpoint. Sensors are implemented in Java, Javascript, PHP, Python,
+          Ruby and .NET.
+        </li>
+        <li>
+          Sensor API: The standard set of methods and supported parameters that
+          a Sensor implements according to this specification in order to
+          transmit Caliper data in an interoperable way.
+        </li>
+      </ul>
+      <h3>End Point</h3>
+      A Caliper Endpoint should be able to receive Caliper data sent through
+      HTTP POST request by a Caliper Sensor. The connection must be secured
+      with Transport Layer Security (TLS). The Endpoint must reply back with a
+      response message after the receipt of a sensor request message. The
+      response will include a three-digit status code indicating whether or not
+      the Endpoint was able to understand and satisfy the request.
+      <br><br>
+      <h3>Metric Profiles</h3>
+      Caliper defines the following metric profiles, each of which models a
+      learning activity or a supporting activity that helps facilitate learning.
+      <ul>
+        <li>
+          Annotation Profile
+        </li>
+        <li>
+          Assessment Profile
+        </li>
+        <li>
+          Assignable Profile
+        </li>
+        <li>
+          Forum Profile
+        </li>
+        <li>
+          Grading Profile
+        </li>
+        <li>
+          Media Profile
+        </li>
+        <li>
+          Reading Profile
+        </li>
+        <li>
+          Session Profile
+        </li>
+        <li>
+          Tool Use Profile
+        </li>
+        <li>
+          Basic Profile
+        </li>
+      </ul>
+      Following is an example of <strong>Session Metric Profile</strong>, which
+      is used for tracking user session related activity/events.
+      The Metric Profle contains entity.
+      <h4>Entities</h4>
+      <table border="1" cellpadding="0" cellspacing="0" width="638">
+      	<tbody>
+      		<tr>
+      			<td style="width:126px;height:24px;">
+      				<p align="center"><strong>Property</strong></p>
+      			</td>
+      			<td style="width:116px;height:24px;">
+      				<p align="center"><strong>Data Type</strong></p>
+      			</td>
+      			<td style="width:141px;height:24px;">
+      				<p align="center"><strong>Description</strong></p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td colspan="4" style="width:638px;height:15px;">
+      				<p><strong>Session</strong></p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:126px;">
+      				<p><strong>actor</strong></p>
+      			</td>
+      			<td style="width:116px;">
+      				<p>FOAF:Agent (user)</p>
+      			</td>
+      			<td style="width:141px;">
+      				<p>Required.&nbsp; Agent for whom the Session exists&nbsp;</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:126px;">
+      				<p><strong>startedAtTime</strong></p>
+      			</td>
+      			<td style="width:116px;">
+      				<p>ISO-8601 timestamp</p>
+      			</td>
+      			<td style="width:141px;">
+      				<p>Date that the session was started by Agent</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:126px;">
+      				<p><strong>endedAtTime</strong></p>
+      			</td>
+      			<td style="width:116px;">
+      				<p>ISO-8601 timestamp</p>
+      			</td>
+      			<td style="width:141px;">
+      				<p>Date that the session was ended</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:126px;">
+      				<p><strong>duration</strong></p>
+      			</td>
+      			<td style="width:116px;">
+      				<p>xsd:duration</p>
+      			</td>
+      			<td style="width:141px;">
+      				<p>Date that the assignable object is Active</p>
+      			</td>
+      		</tr>
+      	</tbody>
+      </table>
+      <h4>Actions</h4>
+      <table border="1" cellpadding="0" cellspacing="0" width="624">
+      	<tbody>
+      		<tr>
+      			<td style="width:96px;">
+      				<p align="center"><strong>Action</strong></p>
+      			</td>
+      			<td style="width:191px;">
+      				<p align="center"><strong>Description</strong></p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:96px;">
+      				<p><strong>Logged In</strong></p>
+      			</td>
+      			<td style="width:191px;">
+      				<p>Action indicating log in to start a session</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:96px;">
+      				<p><strong>Logged Out</strong></p>
+      			</td>
+      			<td style="width:191px;">
+      				<p>Actor initiates end of session</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:96px;">
+      				<p><strong>Timed Out</strong></p>
+      			</td>
+      			<td style="width:191px;">
+      				<p>Session time out.</p>
+      			</td>
+      		</tr>
+      	</tbody>
+      </table>
+      <h4>Session Event</h4>
+      <table border="1" cellpadding="0" cellspacing="0" width="672">
+      	<tbody>
+      		<tr>
+      			<td style="width:154px;">
+      				<p align="center">Event Attribute</p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">Required</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p align="center">Details</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>actor</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">Yes</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>Person, EdApp</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>action</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">Yes</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>From table above</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>object</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">Yes</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>edApp (in most cases)</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>generated</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">Yes</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>Session entity (from table above)</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>target</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">No</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>Frame/webpage, etc.</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>federatedSession</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">No</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>session id</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>edApp</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">No</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>edApp</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>group</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">No</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>Organization</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>membership</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">No</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>Membership</p>
+      			</td>
+      		</tr>
+      		<tr>
+      			<td style="width:154px;">
+      				<p><strong>eventTime</strong></p>
+      			</td>
+      			<td style="width:92px;">
+      				<p align="center">Yes</p>
+      			</td>
+      			<td style="width:178px;">
+      				<p>Event time</p>
+      			</td>
+      		</tr>
+      	</tbody>
+      </table>
+      <br>
+      Following is an example of how a Session LoggedIn event looks like.
+      <br><br>
+      <pre>
+        <code>
+        {
+          "@context": "http://purl.imsglobal.org/ctx/caliper/v1p1",
+          "id": "urn:uuid:fcd495d0-3740-4298-9bec-1154571dc211",
+          "type": "SessionEvent",
+          "actor": {
+            "id": "https://example.edu/users/554433",
+            "type": "Person"
+          },
+          "action": "LoggedIn",
+          "object": {
+            "id": "https://example.edu",
+            "type": "SoftwareApplication",
+            "version": "v2"
+          },
+          "eventTime": "2018-11-15T10:15:00.000Z",
+          "edApp": "https://example.edu",
+          "session": {
+            "id":
+            "https://example.edu/sessions/1f6442a482de72ea6ad134943812bff564a76259",
+            "type": "Session",
+            "user": "https://example.edu/users/554433",
+            "dateCreated": "2018-11-15T10:00:00.000Z",
+            "startedAtTime": "2018-11-15T10:00:00.000Z"
+          }
+        }</code>
+      </pre>
+    </p>
+    <p>
+      The complete list of Metric Profiles can be found in <a
+      href="https://www.imsglobal.org/sites/default/files/caliper/v1p1/caliper-spec-v1p1/caliper-spec-v1p1.html#profiles">
+      Caliper's Documentation</a>.
+    </p>
+    <p>
+      Also, <a
+      href="http://www.imsglobal.org/caliper-analytics-11-public-repos-sensor-apis">
+      click here</a> to see Caliper Sensor APIs.
+    </p>
+  </span>
+
+</div>
