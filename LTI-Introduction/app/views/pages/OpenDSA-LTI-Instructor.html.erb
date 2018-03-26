@@ -6,10 +6,16 @@
     </div>
     <br>
     <p>
-      Previously we have shown <%= link_to "here", lti_opendsa_path %> how
+      Previously we have described <%= link_to "here", lti_opendsa_path %> how
       OpenDSA implements LTI when a student tries to access an OpenDSA exercise
-      from a tool consumer. Here we explain how OpenDSA makes use of LTI when
-      an instructor adds an OpenDSA exercise.
+      from within an LTI tool consumer such as Canvas or Moodle. Here we
+      explain how OpenDSA makes use of LTI to support an instructor who wishes
+      to add individual OpenDSA visualizations or exercises to their course. To
+      better understand this example, you should first try out the instructions
+      that instructors will use to incorporate such materials into their
+      course. You can see this for Canvas <%= link_to "here",
+      lti_instructions_opendsa_path %>, or for Moodle <%= link_to "here",
+      lti_instructions_opendsa_moodle_path %>.
     </p>
 
     OpenDSA implements the LTI controller and since we know that LMS expects
@@ -20,10 +26,10 @@
       after_action :allow_iframe, only: [:launch, :resource]
     </pre>
 
-    When an instructor adds the OpenDSA content, he sees a list of exercises
-    that he can add as shown in the image below. OpenDSA accomplishes all of
+    When an instructor wants to add OpenDSA content, he sees a list of exercises
+    that he can add as shown in the image below. OpenDSA handles all of
     this process, starting from showing the list of exercises to returning the
-    link of selected exercise back to the tool consumer within the
+    link of the selected exercise back to the tool consumer within the
     <em>resource</em> endpoint.
     <div class="text-center">
       <%= image_tag "OpenDSA/exercises.png", style:'width:40%' %>
@@ -31,17 +37,17 @@
     <br><br>
 
     Within the <em>resource</em> endpoint, the first thing that OpenDSA checks
-    is an LMS instance by calling the <em>ensure_lms_instance</em> method, for
-    example the Virginia Tech's Canvas instance (canvas.vt.edu) is different
-    from the Instructure's Canvas instance (canvas.instructure.com). This is
-    used to create the correct URL that will be embedded in the exercises at
-    the end.
+    is that this a known LMS instance by calling the
+    <em>ensure_lms_instance</em> method. For example, Virginia Tech's Canvas
+    instance (canvas.vt.edu) is different from Instructure's public Canvas
+    instance (canvas.instructure.com). This information is used to create the
+    correct URL that will be embedded in the exercises at the end.
     <br><br>
     <pre>
     def resource
       lms_instance = ensure_lms_instance()
     </pre>
-    Within the "<em>ensure_lms_instance</em>", OpenDSA creates a new lms
+    Within "<em>ensure_lms_instance</em>", OpenDSA creates a new LMS
     instance if it does not already exist. <br><br>
     <pre>
     def ensure_lms_instance
@@ -59,7 +65,7 @@
     end
     </pre>
     Once the LMS instance is fetched, OpenDSA fetches the course offering using
-    LMS instance id and course number received in the request (in
+    the LMS instance id and course number received in the request (in
     custom_canvas_course_id parameter). In OpenDSA, a course offering is a
     unique way to identify a course. <br><br>
     <pre>
@@ -76,16 +82,16 @@
       @terms = Term.on_or_future
     end
     </pre>
-    Then OpenDSA creates a launch url of OpenDSA from the request object.
-    Protocol is <em>http</em> or <em>https</em>, and host with port is a
-    complete url where OpenDSA is hosted.
+    Then OpenDSA creates a launch url for OpenDSA from the request object.
+    The protocol is <em>http</em> or <em>https</em>, and
+    <em>host_with_port</em> is a complete url where OpenDSA is hosted.
     <br><br>
 
   <pre>
     @launch_url = request.protocol + request.host_with_port + "/lti/launch"
   </pre>
 
-  After that OpenDSA validates if the request received from the Tool Consumer
+  OpenDSA then validates if the request received from the Tool Consumer
   is an authentic LTI request or not.<br><br>
   <pre>
     # must include the oauth proxy object
@@ -99,8 +105,8 @@
   <br> <br>
 
   Within the <em>lti_authorize!</em> endpoint, OpenDSA creates a tool
-  provider object from the authentication object created above and throws an
-  error and returns in case the key and secret do not match.<br><br>
+  provider object from the authentication object created above, throws an
+  error, and returns in case the key and secret do not match.<br><br>
 
   <pre>
     def lti_authorize!
@@ -122,9 +128,9 @@
 
   If the key and secret match, then within the same 'lti_authorize!' endpoint
   OpenDSA checks if the request is valid or not, or if the timestamp on the
-  request is too old. If so, then OpenDSA returns an error otherwise, returns
-  "<em>true</em>" to the <em>launch_ex</em> endpoint, which means the request
-  is valid.
+  request is too old. If so, then OpenDSA returns an error. Otherwise, it
+  returns "<em>true</em>" to the <em>launch_ex</em> endpoint, which means the
+  request is valid.
   <br><br>
 
   <pre>
@@ -292,7 +298,7 @@
     Most of the work here is done through the JavaScript
     <em>apps/assests/javascripts/lti_resource.js)</em>. In the code
     below, OpenDSA first checks if the course offering exists or not. If the
-    course offering is present then OpenDSA shows a tree view of exercises
+    course offering is present, then OpenDSA shows a tree view of exercises
     directly.
     <br><br>
 
@@ -311,10 +317,10 @@
             initializeJsTree();
           }
   </pre>
-  If the course offering does not exist then in that case, OpenDSA asks the
+  If the course offering does not exist, then OpenDSA asks the
   instructor to provide some information as shown in the form image above.
-  In the code below OpenDSA checks if the organization does not exist then
-  OpenDSA creates organization, course and course offering.<br><br>
+  In the code below, OpenDSA checks if the organization does not exist. If so,
+  then OpenDSA creates the organization, course, and course offering.<br><br>
   <pre>
     else {
       $('#course_info_form').on('submit', function (event) {
@@ -350,7 +356,7 @@
           createCourse(courseNumber, courseName, orgId);
         }
       </pre>
-      And if course also exists then OpenDSA only creates a course offering
+      If the course exists then OpenDSA only creates a course offering
       within that course.<br><br>
       <pre>
         else {
@@ -362,7 +368,7 @@
     <p>
       Once all of this is done and instructor selects an exercise from a tree
       view, a URL of the selected exercise is returned back to the tool
-      Consumer. In Canvas, the returned URL is added under Submission Tool URL
+      Consumer. In Canvas, the returned URL is added under Submission Tool URL,
       as shown in the image below:
       <div class="text-center">
         <%= image_tag "OpenDSA/submission_tool_url.png", style:'width:40%' %>
@@ -371,7 +377,7 @@
     <strong>https://opendsa-server.cs.vt.edu/lti/launch?ex_short_name=IntroSumm.
       </strong>
     </p>
-    This URL is generated in <em>initializeJsTree()</em> function in JavaScript.
+    This URL is generated in <em>initializeJsTree()</em> in JavaScript.
     <br><br>
     <pre>
     $('#using_json')
@@ -400,7 +406,7 @@
     </pre>
     The code above is executed on the selection of an exercise. This code
     calls the <em>getResourceURL</em> method, which generates the URL.
-    Following is a code of the <em>getResourceURL</em> method.<br><br>
+    Following is code for the <em>getResourceURL</em> method.<br><br>
     <pre>
       var getResourceURL = function (obj) {
         if (!$.isEmptyObject(obj)) {
@@ -414,15 +420,12 @@
         return '';
       };
     </pre>
-    Here return_url is the url of the tool consumer to which result has to be
-    returned and urlParams contains launch url of exercise that tool consumer
-    will add in the Submission Tool URL. <br><br>
+    Here <em>return_url</em> is the url of the tool consumer to which result
+    has to be returned. <em>urlParams</em> contains the launch url of the
+    exercise, that tool consumer will add in the Submission Tool URL. <br><br>
 
     Once Submission Tool URL is added, instructors can publish the exercise to
-    make that exercise available for students. <br><br>
-
-    This is how OpenDSA makes use of LTI, which allows the OpenDSA exercises to
-    be seamlessly added into the courses in Learning Management Systems.
+    make that exercise available for students. <br>
 
   </span>
 </div>
