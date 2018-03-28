@@ -226,54 +226,18 @@
       end
     </pre>
 
-    Once the request has been validated and a user has been enrolled, OpenDSA
-    uses RST parser to parse the names of exercises in ReStructuredText (RST)
-    files and finds the current exercise using the short name of exercise.
+    The OpenDSA modules are in ReStructuredText (RST) format and have
+    information about exercises within these modules. OpenDSA converts these
+    RST files into html pages. Once the request has been validated and a user
+    has been enrolled, OpenDSA uses RST parser to parse the names of exercises
+    in ReStructuredText (RST) files and finds the current exercise using the
+    short name of exercise.
     <br><br>
 
     <pre>
       require 'RST/rst_parser'
       @ex = RstParser.get_exercise_map()[params[:ex_short_name]]
     </pre>
-
-    <!-- <strong>Note that</strong>, the OpenDSA modules are in ReStructuredText
-    (RST) format and have information about exercises within these modules.
-    OpenDSA converts these RST files into html pages. Even though this is
-    outside the scope of LTI but for a reference, we have shown below an
-    example of RST file that has information of two exercises, one is inlineav
-    slideshow and other is avembed. These are the two kinds of exercises in
-    OpenDSA, avembeds have their own html pages and inlineavs are generated
-    through JavaScript and CSS. <br><br>
-
-    <pre>
-
-    .. avmetadata::
-       :author: Nabanita Maji
-       :topic: NP-completeness
-
-    The Traveling Salesman Problem
-    ==============================
-
-    Traveling Salesman
-
-    TRAVELING SALESMAN PROBLEM (TSP)
-
-    .. inlineav:: TSPCON ss
-       :long_name: Traveling Salesman
-       :links: AV/Development/NP/TSPCON.css
-       :scripts: AV/Development/NP/TSPCON.js
-       :output: show
-
-    Try out an instance of the Traveling Salesman problem on your own.
-
-    .. avembed:: Exercises/NP/TSPPRO.html ka
-       :long_name: Practice Exercise for Traveling Salesman Problem
-    </pre>
-
-    <p>In the code above, the RST parser parses the information for the
-      exercise. In the case of RST file shown above, it will parse the
-      'long_name' field of the two exercises.
-    </p> -->
 
     Once the specific exercise has been fetched, OpenDSA finds the course
     offering exercise object with the course offering id and the
