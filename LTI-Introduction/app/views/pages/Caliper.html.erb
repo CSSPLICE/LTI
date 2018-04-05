@@ -5,12 +5,12 @@
     </div><br>
     <h3>Introduction</h3>
     <p>
-      Learning data is generated when students interact with different learning
-      tools. This data can be combined with student record and other data
-      points to support student success research. This data can be used by
-      faculty for proactive intervention with a student or this can be used
-      to infer how people learn and thus can help in further improving the
-      learning process. The instructors can also see which behaviors and
+      Learning data or "learning analytics" is generated when students interact
+      with online learning tools. These data can be combined with student
+      record and other data points to support student success. These data can
+      be used by faculty for proactive intervention with a student, or
+      to infer how people use the tool and thus can help to improve the
+      learning process. Instructors can also see which behaviors and
       content produce the desired learning outcomes.
 
     </p>
@@ -21,24 +21,25 @@
       developed by <a href="https://www.imsglobal.org/">IMS Global Learning
         Consortium</a>.
       The purpose of Caliper is to define a standard to measure and share
-      learning data. Most of the learning applications work in silos and
-      separate data has been captured by each learning application. The problem
-      that these separate data sources create is that each organization need to
-      reinvent the analytics wheel and more often than not these separate data
-      sources cannot be merged and therefore, none of the parties have a
-      complete picture. Therefore, a standard way of capturing and sharing
-      learning data enables more efficient development of learning analytics
-      features in learning environments and Caliper does that. Caliper defines
-      a common language for labeling learning data and provides a standard way
+      learning data. Most learning applications work in silos and
+      separate data has historically been captured by each learning
+      application. One problem that these separate data sources create is that
+      each organization needs to reinvent the analytics wheel. A separate
+      problem is that these separate data sources cannot be merged and
+      therefore, none of the parties have a complete picture. Therefore, a
+      standard way of capturing and sharing learning data enables more
+      efficient development of learning analytics features in learning
+      environments. Caliper attempts to overcome these problems by defining a
+      common language for labeling learning data, and provides a standard way
       of measuring learning activities.
     </p>
     <p>
-      Following are few of the key terminologies from IMS website:
+      Following are the terms as defined on the IMS website:
       <ul>
         <li>
-          Metric Profile: This is a information model for Caliper and is
-          organized by learning activity type. For example: Session Metric
-          Profile and a Reading Metric Profile. A Metric Profile includes
+          Metric Profile: This is an information model for Caliper and is
+          organized by learning activity type. For example, the Session Metric
+          Profile and the Reading Metric Profile. A Metric Profile includes
           Entity, Actions and Events.
         </li>
         <li>
@@ -64,8 +65,8 @@
         <li>
           Sensor: Software assets deployed within a learning application that
           implement the Sensor API for transmitting Caliper data to a target
-          endpoint. Sensors are implemented in Java, Javascript, PHP, Python,
-          Ruby and .NET.
+          endpoint. Sensors can be implemented in Java, Javascript, PHP, Python,
+          Ruby, or .NET.
         </li>
         <li>
           Sensor API: The standard set of methods and supported parameters that
@@ -74,9 +75,9 @@
         </li>
       </ul>
       <h3>End Point</h3>
-      A Caliper Endpoint should be able to receive Caliper data sent through
-      HTTP POST request by a Caliper Sensor. The connection must be secured
-      with Transport Layer Security (TLS). The Endpoint must reply back with a
+      A Caliper Endpoint receives Caliper data sent through a HTTP POST request
+      by a Caliper Sensor. The connection must be secured through the Transport
+      Layer Security (TLS). The Endpoint must reply with a
       response message after the receipt of a sensor request message. The
       response will include a three-digit status code indicating whether or not
       the Endpoint was able to understand and satisfy the request.
@@ -116,9 +117,9 @@
           Basic Profile
         </li>
       </ul>
-      Following is an example of <strong>Session Metric Profile</strong>, which
-      is used for tracking user session related activity/events.
-      The Metric Profle contains entity.
+      Following is an example of a <strong>Session Metric Profile</strong>,
+      which is used for tracking user sessions and their related
+      activities and events. The Metric Profle contains entity.
       <h4>Entities</h4>
       <table border="1" cellpadding="0" cellspacing="0" width="638">
       	<tbody>
@@ -348,7 +349,7 @@
       	</tbody>
       </table>
       <br>
-      Following is an example of how a Session LoggedIn event looks like.
+      Following is an example of what a Session LoggedIn event looks like.
       <br><br>
       <pre>
         <code>
