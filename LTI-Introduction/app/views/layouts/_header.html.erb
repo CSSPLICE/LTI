@@ -75,16 +75,21 @@
                                 aria-expanded="false" style="text-align:center">
                                 User <br>Examples<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                  <li> <%= link_to "Add OpenDSA Exercises to
+                                  <li> <%= link_to "Add OpenDSA exercises to
                                   Canvas", lti_instructions_opendsa_path
                                   %></li>
+                                  <li> <%= link_to "Add OpenDSA exercises to
+                                  Moodle", lti_instructions_opendsa_moodle_path
+                                  %></li>
                                   <li>
-                                    <%= link_to "Add OpenDSA Book Instance to
+                                    <%= link_to "Add an OpenDSA eTextbook to
                                     Canvas",
                                   lti_instructions_opendsa_book_instance_path
                                   %></li>
-                                  <li> <%= link_to "Add OpenDSA Exercises to
-                                  Moodle", lti_instructions_opendsa_moodle_path
+                                  <li>
+                                    <%= link_to "Configure an OpenDSA
+                                    eTextbook",
+                                  lti_instructions_opendsa_configure_book_path
                                   %></li>
                                 </ul>
                             </li>

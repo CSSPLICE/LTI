@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   get 'lti/building-lti-tool' => 'pages#Building-LTI-Tool'
   get 'lti/instructions/opendsa/moodle' => 'pages#OpenDSA-Moodle'
   get 'lti/instructions/opendsa/book-instance' => 'pages#OpenDSA-BookInstance'
+  get 'lti/instructions/opendsa/configure-book' =>
+  'pages#OpenDSA-Book-Configuration'
   get 'caliper' => 'pages#Caliper'
   #get "pages/:page" => "pages#show"
   #get 'pages/examples' => 'pages#examples', as: "examples"
