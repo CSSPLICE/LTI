@@ -7,16 +7,16 @@
     <p>
       The LTI specification enhances the functionality provided by a
       Tool Consumer and provides instructors with various applications
-      that they can embed into their course. There are various tools that are
+      that they can embed into their courses. There are various tools that are
       LTI compatible and an instructor can add those tools in their courses and
-      enhace the capabilities of a Tool Consumer and hence, enhance the
+      enhance the capabilities of a Tool Consumer and hence, enhance the
       learning experience of a student.
     </p>
     <p>
       The list of various tools can be found at <a
       href="https://www.eduappcenter.com/">eduappcenter.com</a>. Most of these
       tools either require a contract with your institute or you will have to
-      contact their request a demo and after that they will tell you how you
+      contact them to request a demo and after that, they will tell you how you
       can purchase it. For example:
       <ul>
         <li>
@@ -28,16 +28,16 @@
           <a href="http://www.infobase.com/databases/">Modern World History</a>
           offers a thorough look at world history from the mid-15th century to
           the present. It has thousands of subject entries, biographies,
-          images, videos and slideshows, maps and graphs, primary sources, and
+          images, videos and slideshows, maps, and graphs, primary sources, and
           timelines combine to provide a detailed and comparative view of the
           people, places, events, and ideas that have defined modern world
-          history. You have to email or call them for ordering nad pricing.
+          history. You have to email or call them for ordering and pricing.
         </li>
       </ul>
 
       The tools available on <em>eduappcenter.com</em> are not the only tools
       because various tools have their own websites and are not on this list.
-      For example: <a href="https://codeworkout.cs.vt.edu/">Code Workout</a>
+      For example, <a href="https://codeworkout.cs.vt.edu/">Code Workout</a>
       enables students to work coding exercises from within Canvas in the same
       way that they might do any Canvas-native assignment, and receive a score
       in the Canvas gradebook for doing that assignment. But it is not available
@@ -45,13 +45,15 @@
       website to gain access.
     </p>
     <p>
-      We show how these third party tools can help you enhance your course with
+      We show how these third-party tools can help you enhance your courses with
       an example of <a
-      href="https://www.eduappcenter.com/apps/445#.Wsu2kXXwZoA">ChemVantage
-      </a>, one of the tools from the <a href="https://www.eduappcenter.com/">
-      eduappcenter.com</a>. ChemVantage provides free Chemistry quizzes,
-      homework assignments and practice exams that keep students engaged by
-      allowing multiple submissions until students succeed.
+      href="https://www.eduappcenter.com/apps/445#.Wsu2kXXwZoA">
+      ChemVantage</a>, one of the tools from the
+      <a href="https://www.eduappcenter.com/">eduappcenter.com</a>. ChemVantage
+      provides free Chemistry quizzes, homework assignments and practice exams
+      that keep students engaged by allowing multiple submissions until
+      students succeed. We are using <em>ChemVantage</em> because it is free to
+      use and does not require any contract with your institution.
     </p>
     <p>
       <strong>Step 1:</strong> To add ChemVantage in your course, you need to go
@@ -59,6 +61,123 @@
       target="_blank">chemvantage.org/lti/registration</a>. Once you are on the
       website, you will have to enter your email and a unique consumer key for
       LTI 1.x. You can enter any key that will uniquely identify your LMS.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem1.png", style:'width:40%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 2:</strong> You will receive your credentials (launch URL,
+      consumer key, and a shared secret) in your email.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem2.png", style:'width:25%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 3:</strong>
+      Navigate to your course in Canvas and click the <em>"Settings"</em>
+      link in the left sidebar.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem3.png", style:'width:40%' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 4:</strong>
+      Go to <em>"Apps"</em> and click on <em>"View App Configurations"</em>.
+      Note that your institution's version of Canvas might display differently.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem4.png", style:'width:40%' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 5:</strong>
+      Click on the <em>"+App"</em> button.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem5.png", style:'width:40%' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 6:</strong>
+      Paste your launch URL, consumer key, and a shared secret that you
+      received in your email. The final configuration for ChemVantage should
+      look like the image below. Press <em>"Submit"</em> to add ChemVantage
+      as a Tool Provider to Canvas.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem6.png", style:'width:40%' %>
+      </div>
+    </p>
+    <br>
+    Now you can insert ChemVantage's quizzes and homework assignments.<br><br>
+    <p>
+      <strong>Step 7:</strong>
+      Navigate to the <em>"Assignments"</em> page in your Canvas course and
+      create a new assignment by clicking on <em>"+Assignment"</em> button.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem7.png", style:'width:40%' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 8:</strong>
+      Enter the name and description of your assignment.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem8.png", style:'width:40%' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 9:</strong>
+      Find the input field labeled <em>"Submission Type"</em>. In the dropdown
+      box select <em>"External Tool"</em>, then click the button labeled
+      <em>"Find"</em> to view the list of available tools.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem9.png", style:'width:30%' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 10:</strong>
+      A list of the external tools configured for your course will be
+      displayed. Find the tool named <em>"ChemVantage"</em> and click on it and
+      press <em>"Select"</em>.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem10.png", style:'width:25%' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 11:</strong>
+      The URL textbox on the assignment creation page will then be
+      automatically filled in with the launch URL. After that, specify the
+      number of points the assignment will be worth, choose the assignment
+      group, specify a due date, and then click <em>"Save and Publish"</em>.
+    </p>
+    <p>
+      <strong>Step 12:</strong>
+      After clicking <em>"Save and Publish"</em>, you will be taken to a new
+      page. Select the type and the topic you want for this assignment.
+      Pre-configured multiple choice questions will be shown to the students
+      for each topic.
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem11.png", style:'width:40%' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 13:</strong>
+      The students will be able to complete the assignment by clicking on the
+      ChemVantage assignment from the list of assignments. One example of
+      the ChemVantage assignment is shown here:
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem12.png", style:'width:40%' %>
+      </div><br>
+      Once a student completes an assignment, his/her grade will be submitted
+      to Canvas' gradebook as shown below:<br><br>
+      <div class="text-center">
+        <%= image_tag "toolproviders/chem13.png", style:'width:40%' %>
+      </div>
+    </p>
+    <p>
+      ChemVantage is one of the many tools available out there to enhance your
+      course experience. You can make use of various such tools without any
+      overheads of additional signups and aggregation of stats from various
+      sources.
     </p>
   </span>
 </div>
