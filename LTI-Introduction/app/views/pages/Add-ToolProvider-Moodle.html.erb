@@ -1,0 +1,180 @@
+<div class="row" style="margin:50px">
+  <span class="span12">
+    <div class="text-center">
+      <h1>Add LTI Tool Providers to a Moodle Course</h1>
+    </div>
+    <br>
+    <p>
+      LTI protocol allows an LMS like Moodle to provide instructors with access
+      to applications that they can embed into their courses. Many educational
+      tools are now LTI compatible and an instructor can add those tools in
+      their courses, enhancing the capabilities of the LMS, and thus improve the
+      learning experience of a student.
+    </p>
+    <p>
+      A list of LTI-compliant tools can be found at <a
+      href="https://www.eduappcenter.com/">eduappcenter.com</a>. Most of these
+      tools either require a contract with your institution or you will have to
+      contact them to request a demo and after that, they will tell you how you
+      can purchase it. For example:
+      <ul>
+        <li>
+          <a href="https://aspiredu.com/">Dropout Detective</a> identifies
+          students that are most at risk of dropping out of or failing courses.
+          Dropout Detective requires a contract with your institution.
+        </li>
+        <li>
+          <a href="http://www.infobase.com/databases/">Modern World History</a>
+          offers a thorough look at world history from the mid-15th century to
+          the present. It has thousands of subject entries, biographies,
+          images, videos and slideshows, maps, and graphs, primary sources, and
+          timelines combined to provide a detailed and comparative view of the
+          people, places, events, and ideas that have defined modern world
+          history. You have to email or call them for ordering and pricing.
+        </li>
+      </ul>
+
+      Other LTI-compliant tools have their own websites and are not on this
+      list. For example, <a href="https://codeworkout.cs.vt.edu/">Code
+      Workout</a> enables students to work coding exercises from within LMS
+      in the same way that they might do any LMS-native assignment, and
+      receive a score in the LMS gradebook for doing that assignment. But it
+      is not available on <em>eduappcenter.com</em> and you have to go to Code
+      Workout's website to gain access.
+    </p>
+    <p>
+      We show how these third-party tools can help you enhance your courses with
+      an example of <a
+      href="https://www.eduappcenter.com/apps/445#.Wsu2kXXwZoA">
+      ChemVantage</a>, one of the tools from the
+      <a href="https://www.eduappcenter.com/">eduappcenter.com</a>. ChemVantage
+      provides free Chemistry quizzes, homework assignments and practice exams
+      that keep students engaged by allowing multiple submissions until
+      students succeed. We are using <em>ChemVantage</em> as an example in this
+      tutorial because it is free to use.
+    </p>
+    <p>
+      <strong>Step 1:</strong> To add ChemVantage in your course, you need to go
+      to <a href="https://www.chemvantage.org/lti/registration/"
+      target="_blank">chemvantage.org/lti/registration</a>. Once you are on
+      their website, you will have to enter your email and a unique consumer
+      key for LTI 1.x. You can enter any key that will uniquely identify your
+      LMS.
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle1.png", style:'width:40%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 2:</strong> You will receive your credentials (launch URL,
+      consumer key, and a shared secret) in your email.
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle2.png", style:'width:25%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 3:</strong>
+      Navigate to your course in Moodle and click on <em>"Add an
+      activity or resource"</em>.
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle3.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 4:</strong>
+      Select <em>"External Tool"</em> from the list and click <em>"Add"</em>.
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle4.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 5:</strong>
+      Click on the <em>"+"</em> icon on the right of <em>Preconfigured
+      tool</em> to add a new Tool Provider.
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle5.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 6:</strong>
+      Paste your launch URL, consumer key, and a shared secret that you
+      received in your email.
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle6.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 7:</strong> Under <em>"Privacy"</em> settings, select
+      <em>"Always"</em> for all three dropdowns.
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle7.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 8:</strong> Once the above steps are completed, click "Save
+      Changes" to add ChemVantage as a Tool Provider.
+    </p>
+    <br>
+    You should be back on a previous page and now you can insert ChemVantage's
+    quizzes and homework assignments.<br><br>
+    <p>
+      <strong>Step 9:</strong> Enter the name and description of your
+      assignment and select <em>ChemVantage</em> from the <em>Preconfigured
+      tool</em> dropdown. Select the number of points you want to assign to
+      this ChemVantage exercise under the <em>"Grade"</em> section.
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle8.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+
+    <p>
+      <strong>Step 10:</strong>
+      After clicking <em>"Save and Publish"</em>, you will be taken to your
+      course page. Click on the assignment you just created.
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle9.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      <strong>Step 10:</strong>
+      You will be taken to a ChemVantage setup page. Select the type and the
+      topic you want for this assignment. Pre-configured multiple choice
+      questions will be shown to the students for each topic
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle10.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+
+    <p>
+      <strong>Step 13:</strong>
+      Students will be able to complete the assignment by clicking on the
+      ChemVantage assignment from the list of assignments. One example of
+      the ChemVantage assignment is shown here:
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle11.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div><br>
+      Once a student completes an assignment, his/her grade will be submitted
+      to the Moodle gradebook as shown below:<br><br>
+      <div class="text-center">
+        <%= image_tag "toolproviders/moodle12.png", style:'width:60%;border: 1px
+        solid #555050' %>
+      </div>
+    </p>
+    <p>
+      ChemVantage is one of the many tools available to enhance your
+      course experience. You can make use of various such tools without imposing
+      the overhead of additional signups for your students. And the grades from
+      these tools feed directly to your Moodle gradebook.
+    </p>
+  </span>
+</div>

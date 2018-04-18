@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   'pages#OpenDSA-Book-Configuration'
   get 'caliper' => 'pages#Caliper'
   get 'lti/toolproviders/canvas' => 'pages#Add-ToolProvider-Canvas'
+  get 'lti/toolproviders/moodle' => 'pages#Add-ToolProvider-Moodle'
   #get "pages/:page" => "pages#show"
   #get 'pages/examples' => 'pages#examples', as: "examples"
   # resources :pages do
