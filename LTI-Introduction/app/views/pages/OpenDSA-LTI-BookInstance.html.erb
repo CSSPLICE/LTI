@@ -5,13 +5,13 @@
     </div>
     <br>
     <p>
-      Previously, we have shown <%= link_to "here", lti_opendsa_path %> that how
+      Previously, we have shown <%= link_to "here", lti_opendsa_path %> how
       OpenDSA implements LTI when a student tries to access a standalone
-      exercise from a tool consumer. In this tutorial we explain further the
+      exercise from a tool consumer. In this tutorial, we explain further the
       <strong>launch</strong> endpoint for how OpenDSA makes use of LTI when a
       student accesses an exercise from an OpenDSA book instance (generated
-      through OpenDSA website). Note that a <strong>Launch</strong> endpoint is
-      called when a student accesses OpenDSA exercise. A
+      through the OpenDSA website). Note that a <strong>Launch</strong>
+      endpoint is called when a student accesses an OpenDSA exercise. A
       <strong>resource</strong> endpoint is called when an instructor adds any
       OpenDSA content to the Tool Consumer, where he sees a list of exercises
       that he can add to his course.
@@ -26,7 +26,7 @@
       end
     </pre>
 
-    If the exercise is from a book instance then within the launch endpoint,
+    If the exercise is from a book instance, then within the launch endpoint,
     OpenDSA finds the book instance from the custom book instance id received
     in the request and fetches the course offering this book instance belongs
     to. In OpenDSA, a course offering is a way to uniquely identify a
@@ -38,7 +38,7 @@
       @course_offering = CourseOffering.find_by(id:
       @inst_book.course_offering_id)
     </pre>
-    Once, the book instance and course offering is fetched, OpenDSA validates
+    Once, the book instance and course offering are fetched, OpenDSA validates
     if the received request is an authentic LTI request or not. To do so,
     OpenDSA first fetches the credentials (unique secret) from the public
     authentication key received in the request and calls the
@@ -138,7 +138,7 @@
 
     Within the <em>"lti_enroll"</em> method, OpenDSA checks if the course
     offering exists and allows users to enroll or not. After that, OpenDSA
-    enrolls the user if she has not already enrolled into this specific course
+    enrolls the user if she has not already enrolled in this specific course
     offering.<br><br>
     <pre>
       def lti_enroll(course_offering, role = CourseRole.student)
@@ -155,7 +155,7 @@
     </pre>
 
     Once the request has been validated and a user has been enrolled, OpenDSA
-    reads the html content of the exercise, which is shown to the user in an
+    reads the HTML content of the exercise, which is shown to the user in an
     iframe within the tool consumer.<br><br>
     <pre>
       @section_html = File.read(File.join('public/OpenDSA/Books',
@@ -171,7 +171,7 @@
   method sends score back to Tool Consumer if this exercise was launched as an
   assessment.
   <br><br>
-  Within the <em>assessment</em> endpoint, initially OpenDSA checks if the
+  Within the <em>assessment</em> endpoint, initially, OpenDSA checks if the
   exercise is from a book instance or not. If the exercise is from a book
   instance then the request will have <em>"instBookSectionExerciseId"</em>
   parameter. OpenDSA fetches the number of attempts on this exercise and
@@ -242,7 +242,7 @@
     f = render_to_string "lti/table.html.erb"
     </pre>
     <p>
-      The progress and attempts can be checked in Canvas by clicking on Grades
+      Progress and attempts can be checked in Canvas by clicking on Grades
       -> [Name of Assignment]. The result is shown in tabular form in Canvas as
       in this image.
       <div class="text-center">
@@ -290,7 +290,7 @@
     <br><br>
     <pre>
       if !@tp.outcome_service?
-        @message = "This tool wasn't lunched as an outcome service"
+        @message = "This tool wasn't launched as an outcome service"
         render(:error)
       end
 
