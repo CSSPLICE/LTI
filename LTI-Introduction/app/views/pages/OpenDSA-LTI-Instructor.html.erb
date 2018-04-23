@@ -8,8 +8,8 @@
     <p>
       Previously we have described <%= link_to "here", lti_opendsa_path %> how
       OpenDSA implements LTI when a student tries to access an OpenDSA exercise
-      from within an LTI tool consumer such as Canvas or Moodle. Here we
-      explain how OpenDSA makes use of LTI to support an instructor who wishes
+      from within an LTI tool consumer such as Canvas or Moodle. This tutorial
+      explains how OpenDSA makes use of LTI to support an instructor who wishes
       to add individual OpenDSA visualizations or exercises to their course. To
       better understand this example, you should first try out the instructions
       that instructors will use to incorporate such materials into their
@@ -18,9 +18,10 @@
       lti_instructions_opendsa_moodle_path %>.
     </p>
 
-    OpenDSA implements the LTI controller and since we know that LMS expects
-    Tool Provider to open in an iframe, therefore, in the start of the LTI
-    controller OpenDSA allows both the launch and the resource endpoints to
+    LTI controller <em>(apps/controllers/lti_controller.rb)</em> in OpenDSA
+    takes care of all the requests related to LTI. An LTI-compliant LMS expects
+    a Tool Provider to open in an iframe. Therefore, at the start of the LTI
+    controller, OpenDSA allows both the launch and the resource endpoints to
     open in an iframe.<br><br>
     <pre>
       after_action :allow_iframe, only: [:launch, :resource]
@@ -37,7 +38,7 @@
     <br><br>
 
     Within the <em>resource</em> endpoint, the first thing that OpenDSA checks
-    is that this a known LMS instance by calling the
+    is that this is a known LMS instance by calling the
     <em>ensure_lms_instance</em> method. For example, Virginia Tech's Canvas
     instance (canvas.vt.edu) is different from Instructure's public Canvas
     instance (canvas.instructure.com). This information is used to create the
@@ -47,8 +48,8 @@
     def resource
       lms_instance = ensure_lms_instance()
     </pre>
-    Within "<em>ensure_lms_instance</em>", OpenDSA creates a new LMS
-    instance if it does not already exist. <br><br>
+    Within "<em>ensure_lms_instance</em>", OpenDSA creates a new database entry
+    for this LMS instance if it does not already exist. <br><br>
     <pre>
     def ensure_lms_instance
       lms_instance = LmsInstance.find_by(url:
@@ -82,9 +83,9 @@
       @terms = Term.on_or_future
     end
     </pre>
-    Then OpenDSA creates a launch url for OpenDSA from the request object.
-    The protocol is <em>http</em> or <em>https</em>, and
-    <em>host_with_port</em> is a complete url where OpenDSA is hosted.
+    Then OpenDSA creates a launch URL for OpenDSA from the request object.
+    The protocol is <em>HTTP</em> or <em>HTTPS</em>, and
+    <em>host_with_port</em> is a complete URL where OpenDSA is hosted.
     <br><br>
 
   <pre>
@@ -164,7 +165,7 @@
     sign_in @user
   </pre>
 
-  Finally OpenDSA parses RST files and fetches the names of all exercises and
+  Finally, OpenDSA parses RST files and fetches the names of all exercises and
   shows the "<em>lti_resource</em>" layout, which opens
   "<em>views/lti/resource.html.haml</em>". The names of these exercises will be
   later shown to instructors in a tree view from where they can select
@@ -288,11 +289,11 @@
             = submit_tag 'Submit', class: 'btn btn-primary'
 
     </pre>
-    The code above is just to display a form in which OpenDSA checks if the
+    The code above will display a form in which OpenDSA checks if the
     course offering is blank or not. If it is blank then that means that a
     first exercise is being added for this course and no information of this
     particular course is present in OpenDSA's database. To get the information
-    about this course, OpenDSA shows a form to track the course and associate
+    about this course, OpenDSA shows a form to track the course and to associate
     exercises with that course. <br><br>
 
     Most of the work here is done through the JavaScript
@@ -420,8 +421,8 @@
         return '';
       };
     </pre>
-    Here <em>return_url</em> is the url of the tool consumer to which result
-    has to be returned. <em>urlParams</em> contains the launch url of the
+    Here <em>return_url</em> is the URL of the tool consumer to which result
+    has to be returned. <em>urlParams</em> contains the launch URL of the
     exercise, that tool consumer will add in the Submission Tool URL. <br><br>
 
     Once Submission Tool URL is added, instructors can publish the exercise to
