@@ -12,7 +12,18 @@
   </head>
 
   <body>
-      <%= render "layouts/header" %>
+      <% if current_page?(lti_instructors_path) || (!current_page?(index_path) && !current_page?(root_path) && !current_page?(lti_path) && @@isInstructor) %>
+          <%= render 'layouts/instructor_header' %>
+          <% @@isInstructor = true %>
+      <% elsif current_page?(index_path) || current_page?(root_path) ||
+          current_page?(lti_path)%>
+          <%= render 'layouts/header' %>
+          <%  @@isInstructor = false %>
+      <% else %>
+          <%= render 'layouts/header' %>
+          <%  @@isInstructor = false %>
+      <% end %>
+
       <%= yield %>
       <%= render "layouts/footer" %>
   </body>

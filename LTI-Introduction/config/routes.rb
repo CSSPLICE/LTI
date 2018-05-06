@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get 'caliper' => 'pages#Caliper'
   get 'lti/toolproviders/canvas' => 'pages#Add-ToolProvider-Canvas'
   get 'lti/toolproviders/moodle' => 'pages#Add-ToolProvider-Moodle'
+  get 'lti/instructors' => 'pages#instructors'
   #get "pages/:page" => "pages#show"
   #get 'pages/examples' => 'pages#examples', as: "examples"
   # resources :pages do
