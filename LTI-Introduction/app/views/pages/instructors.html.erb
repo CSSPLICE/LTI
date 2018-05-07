@@ -1,57 +1,86 @@
 <div class="row" style="margin:50px">
   <span class="span12">
     <div class="text-center">
-      <h1>Enhancing LMS capabilities via LTI</h1>
+      <h1>Enhancing Canvas Course with Third-Party Tools</h1>
     </div><br>
+    <h3>Purpose</h3>
     <p>
       The purpose of this webpage is to provide instructors the resources to
       learn how they can add various third-party applications and
-      enhance the capabilities of the LMS via LTI.
+      enhance the capabilities of Canvas. These third-party applications are
+      called <strong>Tools</strong>, and they are delivered by <strong>Tool
+      Providers</strong>. These are things like interactive exercises that a
+      student might do for a grade. The LMS (systems like Canvas, Moodle etc.)
+      is called a <strong>Tool Consumer</strong>.
     </p>
+    <h3>Why do I care?</h3>
     <p>
-      Learning Tools Interoperability (LTI) establishes a standard way to
-      integrate remotely hosted learning applications with platforms like
-      learning management systems (LMS) and similar educational
-      environments. Learning applications are called <strong>Tools</strong>,
-      and they are delivered by <strong>Tool Providers</strong>.
-      These are things like interactive exercises that a student might
-      do for a grade. The LMS (systems like Canvas, Moodle etc.) is called a
-      <strong>Tool Consumer</strong>.
+      Canvas goes a long way in helping instructors teach more effectively but
+      it is not perfect in any sense. It does not have many important
+      functionalities. It also does not have those 'nice-to-have' features that
+      you wish it had. But there are various third-party applications that can
+      help you get those features without doing much additional work. You can
+      add many third-party applications to your courses, enhancing the
+      capabilities of Canvas. Once you add a third-party tool by following the
+      few simple steps, you and your students will feel that the tool is a part
+      of Canvas. You can easily navigate between various learning tools within
+      Canvas without having to log into each tool separately. The scores of
+      students are recorded in Canvas Gradebook similar to the native
+      assignments of Canvas.
     </p>
+    <h3>Examples</h3>
     <p>
-      LTI protocol allows an LMS like Canvas to provide instructors with access
-      to applications that they can embed into their courses. Many educational
-      tools are now LTI compatible and an instructor can add those tools in
-      their courses, enhancing the capabilities of the LMS, and thus improve the
-      learning experience of a student. LTI allows students and instructors to
-      navigate between various learning tools without having to log into each
-      tool separately. The scores of students are recorded within LMS (e.g.
-      Canvas Gradebook) similar to the native assignments of LMS.
-    </p>
-    <p>
-      Once you add a third-party tool by following the few simple steps,
-      you and your students will feel that the tool is a part of your LMS.
-      For example, Code Workout is a third-party tool that lets students answer
+      A list of some of the external tools can be found at <a
+      href="https://www.eduappcenter.com/">eduappcenter.com</a>. You can add
+      these tools to your Canvas course. For example:
+      <ul>
+        <li>
+          <a href="https://aspiredu.com/">Dropout Detective</a> identifies
+          students that are most at risk of dropping out of or failing courses.
+          This can be an effective addition to your course to help you in early
+          detection of the students who are at risk of dropping out and you can
+          give them more support they need to stay in your course.
+        </li>
+        <li>
+          If you want to teach history to students, you may want to look at <a
+          href="http://www.infobase.com/databases/">Modern World History</a>.
+          Modern World History offers a thorough look at world history from the
+          mid-15th century to the present. It has thousands of subject entries,
+          biographies, images, videos and slideshows, maps, and graphs, primary
+          sources, and timelines combined to provide a detailed and comparative
+          view of the people, places, events, and ideas that have defined
+          modern world history.
+        </li>
+      </ul>
+      Other external tools have their own websites and are not on this
+      list. For example, <a href="https://codeworkout.cs.vt.edu/">Code
+      Workout</a> can be a great tool for you if your students have to solve
+      programming exercises. It is a third-party tool that lets students answer
       and get credit for small programming exercises. Once you add Code Workout
-      into your LMS (e.g. Canvas), it will enable students to work on coding
-      exercises from within Canvas in the same way that they might do any
-      Canvas-native assignment, and receive a score in the Canvas gradebook for
-      doing that assignment. Neither you nor your students will have to log
+      into Canvas, it will enable students to work on coding
+      exercises from within Canvas, and receive a score in the Canvas gradebook
+      for doing that assignment. Neither you nor your students will have to log
       into the Code Workout's website. You also won't have to copy the grades
-      manually to Canvas gradebook. You can create assignments from within LMS
-      and students will solve those assignments in the same way they might do
-      any LMS-native assignment.
+      manually to Canvas gradebook. You can create assignments from within
+      Canvas and students will solve those assignments in the same way they
+      might do any Canvas-native assignment.
     </p>
+    <h3>What's Next?</h3>
     <p>
-      Follow <%= link_to "these steps", lti_toolproviders_canvas_path %>  to
-      learn how to add a tool provider within Canvas. Similarly, you can follow
-      the steps mentioned <%= link_to "here", lti_toolproviders_moodle_path %>
-      to add a tool provide in Moodle. You can navigate between these various
-      resources from the top menu.
+      We have created a detailed step by step tutorial on how you can add these
+      third-party tools in your Canvas course. <%= link_to "Click here",
+      lti_toolproviders_canvas_path %> to follow the detailed tutorial to
+      learn how to add a tool provider within Canvas.
+    </p>
+    <br>
+    <p>
+
     </p>
     <p> These tutorials are a part of the <a href="http://cssplice.org">SPLICE
-      Project</a>. If you want to develop your own LTI tool, you can follow our
-      <%= link_to "LTI tutorials", lti_path %>.
+      Project</a>. If your institution uses Moodle, you can follow <%= link_to "these steps",
+      lti_toolproviders_moodle_path %> to learn how to add a
+      tool provider in Moodle. If you want to develop your own tool, you can
+      follow our <%= link_to "LTI tutorials", lti_path %>.
     </p>
 
   </span>
