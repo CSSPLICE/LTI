@@ -57,3 +57,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'ims-lti', '~> 1.1.8'
 gem 'thin'
+
+# Javascript for Uglifyjs in docker
+gem 'therubyracer'
